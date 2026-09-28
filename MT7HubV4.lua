@@ -427,6 +427,217 @@ local SettingsPage = CreatePage("Settings")
 local KeyPage = CreatePage("KeyPage")
 
 --==================================================
+-- 🎨 CONTEÚDO DA PÁGINA PERSONALIZAR
+--==================================================
+
+local ThemeTitle = Label(
+    ThemePage,
+    "🎨 PERSONALIZAR",
+    18
+)
+
+ThemeTitle.Position = UDim2.new(0, 20, 0, 15)
+ThemeTitle.Size = UDim2.new(1, -40, 0, 35)
+ThemeTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local ThemeInfo = Label(
+    ThemePage,
+    "Escolha o tema do MT7 HUB",
+    11
+)
+
+ThemeInfo.Position = UDim2.new(0, 20, 0, 52)
+ThemeInfo.Size = UDim2.new(1, -40, 0, 25)
+ThemeInfo.TextXAlignment = Enum.TextXAlignment.Left
+
+local EclipseThemeButton = Button(
+    ThemePage,
+    "🌑  ECLIPSE"
+)
+
+EclipseThemeButton.Position = UDim2.new(0, 20, 0, 95)
+EclipseThemeButton.Size = UDim2.new(1, -40, 0, 45)
+
+local PurpleThemeButton = Button(
+    ThemePage,
+    "🟣  PURPLE"
+)
+
+PurpleThemeButton.Position = UDim2.new(0, 20, 0, 150)
+PurpleThemeButton.Size = UDim2.new(1, -40, 0, 45)
+
+local BlueThemeButton = Button(
+    ThemePage,
+    "🔵  BLUE"
+)
+
+BlueThemeButton.Position = UDim2.new(0, 20, 0, 205)
+BlueThemeButton.Size = UDim2.new(1, -40, 0, 45)
+
+local BlackThemeButton = Button(
+    ThemePage,
+    "⚫  BLACK"
+)
+
+BlackThemeButton.Position = UDim2.new(0, 20, 0, 260)
+BlackThemeButton.Size = UDim2.new(1, -40, 0, 45)
+
+local MoonThemeButton = Button(
+    ThemePage,
+    "🌙  MOON"
+)
+
+MoonThemeButton.Position = UDim2.new(0, 20, 0, 315)
+MoonThemeButton.Size = UDim2.new(1, -40, 0, 45)
+
+--==================================================
+-- 🌈 AÇÕES DOS TEMAS
+--==================================================
+
+EclipseThemeButton.MouseButton1Click:Connect(function()
+    MT7Themes.Set("Eclipse")
+end)
+
+PurpleThemeButton.MouseButton1Click:Connect(function()
+    MT7Themes.Set("Purple")
+end)
+
+BlueThemeButton.MouseButton1Click:Connect(function()
+    MT7Themes.Set("Blue")
+end)
+
+BlackThemeButton.MouseButton1Click:Connect(function()
+    MT7Themes.Set("Black")
+end)
+
+MoonThemeButton.MouseButton1Click:Connect(function()
+    MT7Themes.Set("Moon")
+end)
+--==================================================
+-- ⚙️ CONFIGURAÇÕES
+--==================================================
+
+local SettingsTitle = Label(
+    SettingsPage,
+    "⚙️ CONFIGURAÇÕES",
+    18
+)
+
+SettingsTitle.Position = UDim2.new(0, 20, 0, 15)
+SettingsTitle.Size = UDim2.new(1, -40, 0, 35)
+SettingsTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local SettingsInfo = Label(
+    SettingsPage,
+    "Controles de desempenho do MT7 HUB",
+    11
+)
+
+SettingsInfo.Position = UDim2.new(0, 20, 0, 52)
+SettingsInfo.Size = UDim2.new(1, -40, 0, 25)
+SettingsInfo.TextXAlignment = Enum.TextXAlignment.Left
+
+
+local FPSButton = Button(
+    SettingsPage,
+    "📊  FPS MONITOR: OFF"
+)
+
+FPSButton.Position = UDim2.new(0, 20, 0, 95)
+FPSButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local PingButton = Button(
+    SettingsPage,
+    "📡  PING MONITOR: OFF"
+)
+
+PingButton.Position = UDim2.new(0, 20, 0, 150)
+PingButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local BoosterButton = Button(
+    SettingsPage,
+    "🚀  FPS BOOSTER: OFF"
+)
+
+BoosterButton.Position = UDim2.new(0, 20, 0, 205)
+BoosterButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local FreezeButton = Button(
+    SettingsPage,
+    "🧊  ANTI-FREEZE: OFF"
+)
+
+FreezeButton.Position = UDim2.new(0, 20, 0, 260)
+FreezeButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+--==================================================
+-- 🔘 ESTADOS DOS BOTÕES
+--==================================================
+
+local FPSEnabled = false
+local PingEnabled = false
+local BoosterEnabled = false
+local FreezeEnabled = false
+
+
+FPSButton.MouseButton1Click:Connect(function()
+
+    FPSEnabled = not FPSEnabled
+
+    if FPSEnabled then
+        FPSButton.Text = "📊  FPS MONITOR: ON"
+    else
+        FPSButton.Text = "📊  FPS MONITOR: OFF"
+    end
+
+end)
+
+
+PingButton.MouseButton1Click:Connect(function()
+
+    PingEnabled = not PingEnabled
+
+    if PingEnabled then
+        PingButton.Text = "📡  PING MONITOR: ON"
+    else
+        PingButton.Text = "📡  PING MONITOR: OFF"
+    end
+
+end)
+
+
+BoosterButton.MouseButton1Click:Connect(function()
+
+    BoosterEnabled = not BoosterEnabled
+
+    if BoosterEnabled then
+        BoosterButton.Text = "🚀  FPS BOOSTER: ON"
+    else
+        BoosterButton.Text = "🚀  FPS BOOSTER: OFF"
+    end
+
+end)
+
+
+FreezeButton.MouseButton1Click:Connect(function()
+
+    FreezeEnabled = not FreezeEnabled
+
+    if FreezeEnabled then
+        FreezeButton.Text = "🧊  ANTI-FREEZE: ON"
+    else
+        FreezeButton.Text = "🧊  ANTI-FREEZE: OFF"
+    end
+
+end)
+
+--==================================================
+--==================================================
+--==================================================
 -- FUNÇÃO DE BOTÃO DO MENU
 --==================================================
 

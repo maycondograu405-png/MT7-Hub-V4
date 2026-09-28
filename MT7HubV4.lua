@@ -442,7 +442,7 @@ ThemeTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 local ThemeInfo = Label(
 ThemePage,
-"Escolha o tema do MT7 HUB",
+"Escolha o tema e a fonte do MT7 HUB",
 11
 )
 
@@ -528,6 +528,98 @@ ThemeScroll,
 
 MoonThemeButton.Position = UDim2.new(0, 20, 0, 235)
 MoonThemeButton.Size = UDim2.new(1, -40, 0, 45)
+
+--==================================================
+-- 🔤 FONTES DO HUB
+--==================================================
+
+local MinecraftFontButton = Button(
+    ThemeScroll,
+    "🟩  MINECRAFT"
+)
+
+MinecraftFontButton.Position = UDim2.new(0, 20, 0, 290)
+MinecraftFontButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local CartoonFontButton = Button(
+    ThemeScroll,
+    "🧸  CARTOON"
+)
+
+CartoonFontButton.Position = UDim2.new(0, 20, 0, 345)
+CartoonFontButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local SciFiFontButton = Button(
+    ThemeScroll,
+    "🚀  SCI-FI"
+)
+
+SciFiFontButton.Position = UDim2.new(0, 20, 0, 400)
+SciFiFontButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local FantasyFontButton = Button(
+    ThemeScroll,
+    "✨  FANTASY"
+)
+
+FantasyFontButton.Position = UDim2.new(0, 20, 0, 455)
+FantasyFontButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+local GothamFontButton = Button(
+    ThemeScroll,
+    "🔥  GOTHAM"
+)
+
+GothamFontButton.Position = UDim2.new(0, 20, 0, 510)
+GothamFontButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+--==================================================
+-- 🔤 AÇÕES DAS FONTES
+--==================================================
+
+MinecraftFontButton.MouseButton1Click:Connect(function()
+    pcall(function()
+        MT7Letters.SetFont("Code")
+        MT7Letters.ApplyToGui(Gui, "Code")
+    end)
+end)
+
+
+CartoonFontButton.MouseButton1Click:Connect(function()
+    pcall(function()
+        MT7Letters.SetFont("Cartoon")
+        MT7Letters.ApplyToGui(Gui, "Cartoon")
+    end)
+end)
+
+
+SciFiFontButton.MouseButton1Click:Connect(function()
+    pcall(function()
+        MT7Letters.SetFont("SciFi")
+        MT7Letters.ApplyToGui(Gui, "SciFi")
+    end)
+end)
+
+
+FantasyFontButton.MouseButton1Click:Connect(function()
+    pcall(function()
+        MT7Letters.SetFont("Fantasy")
+        MT7Letters.ApplyToGui(Gui, "Fantasy")
+    end)
+end)
+
+
+GothamFontButton.MouseButton1Click:Connect(function()
+    pcall(function()
+        MT7Letters.SetFont("Gotham")
+        MT7Letters.ApplyToGui(Gui, "Gotham")
+    end)
+end)
 
 --==================================================
 -- 🌈 AÇÕES DOS TEMAS

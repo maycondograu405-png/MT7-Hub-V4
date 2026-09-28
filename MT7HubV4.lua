@@ -1,7 +1,7 @@
 --==================================================
--- MT7 HUB V4
--- COMPLETE INTERFACE
--- PART 1/3
+-- MT7 HUB V4.1
+-- PARTE 1/5
+-- BASE + INTRO + KEY + INTERFACE COMPACTA
 --==================================================
 
 local Players = game:GetService("Players")
@@ -12,1609 +12,1148 @@ local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 --==================================================
--- MODULE LOADER
+-- CONFIG
 --==================================================
+
+local HUB_NAME = "MT7HubV4"
+local VALID_KEY = "MT7-V4-2026"
 
 local BASE_URL =
     "https://raw.githubusercontent.com/maycondograu405-png/MT7-Hub-V4/refs/heads/main/"
 
+local CurrentMode = "FREE"
+local Unlocked = false
+
+local CurrentTheme = "Eclipse"
+local CurrentFont = "Gotham"
+local AnimationsEnabled = true
+local MonitorEnabled = true
+local MobileMode = true
+local TargetFPS = 70
+
+--==================================================
+-- CORES
+--==================================================
+
+local C = {
+    Black = Color3.fromRGB(8, 8, 12),
+    Background = Color3.fromRGB(14, 14, 21),
+    Panel = Color3.fromRGB(20, 20, 30),
+    Panel2 = Color3.fromRGB(25, 25, 38),
+
+    Purple = Color3.fromRGB(145, 65, 255),
+    Purple2 = Color3.fromRGB(100, 40, 190),
+
+    Blue = Color3.fromRGB(55, 130, 255),
+    White = Color3.fromRGB(245, 245, 250),
+    SubText = Color3.fromRGB(170, 170, 185),
+
+    Green = Color3.fromRGB(65, 220, 130),
+    Red = Color3.fromRGB(240, 70, 80)
+}
+
+--==================================================
+-- LOAD MODULES
+--==================================================
+
 local function LoadModule(name)
-
     local ok, result = pcall(function()
-
-        local source = game:HttpGet(
-            BASE_URL .. name .. ".lua"
-        )
-
+        local source = game:HttpGet(BASE_URL .. name .. ".lua")
         local fn = loadstring(source)
 
         if not fn then
-            error("Loadstring indisponível")
+            error("loadstring indisponível")
         end
 
         return fn()
-
     end)
 
     if ok then
         return result
     end
 
-    warn(
-        "[MT7] Erro ao carregar " ..
-        name .. ": " ..
-        tostring(result)
-    )
-
+    warn("[MT7] Falha ao carregar " .. name)
     return nil
 end
 
---==================================================
--- MODULES
---==================================================
-
-local MT7FPS =
-    LoadModule("MT7FPS")
-
-local MT7Animations =
-    LoadModule("MT7Animations")
-
-local MT7Letters =
-    LoadModule("MT7Letters")
-
-local MT7Themes =
-    LoadModule("MT7Themes")
-
-local MT7Monitor =
-    LoadModule("MT7Monitor")
-
-local MT7Settings =
-    LoadModule("MT7Settings")
+local MT7FPS = LoadModule("MT7FPS")
+local MT7Animations = LoadModule("MT7Animations")
+local MT7Letters = LoadModule("MT7Letters")
+local MT7Themes = LoadModule("MT7Themes")
+local MT7Monitor = LoadModule("MT7Monitor")
+local MT7Settings = LoadModule("MT7Settings")
 
 --==================================================
--- REMOVE OLD VERSION
+-- GUI PRINCIPAL
 --==================================================
 
-pcall(function()
-
-    local old =
-        PlayerGui:FindFirstChild("MT7HubV4")
-
-    if old then
-        old:Destroy()
-    end
-
-end)
-
---==================================================
--- MAIN GUI
---==================================================
-
-local Gui =
-    Instance.new("ScreenGui")
-
-Gui.Name = "MT7HubV4"
+local Gui = Instance.new("ScreenGui")
+Gui.Name = HUB_NAME
 Gui.ResetOnSpawn = false
 Gui.IgnoreGuiInset = true
-Gui.ZIndexBehavior =
-    Enum.ZIndexBehavior.Sibling
-
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Gui.Parent = PlayerGui
 
 --==================================================
--- COLORS
+-- FUNÇÕES AUXILIARES
 --==================================================
 
-local C = {
-
-    Black =
-        Color3.fromRGB(5, 5, 8),
-
-    Background =
-        Color3.fromRGB(10, 9, 14),
-
-    Panel =
-        Color3.fromRGB(17, 15, 24),
-
-    Panel2 =
-        Color3.fromRGB(24, 21, 33),
-
-    Purple =
-        Color3.fromRGB(145, 70, 255),
-
-    Blue =
-        Color3.fromRGB(70, 125, 255),
-
-    White =
-        Color3.fromRGB(245, 245, 250),
-
-    Gray =
-        Color3.fromRGB(150, 150, 165),
-
-    Green =
-        Color3.fromRGB(80, 230, 145),
-
-    Red =
-        Color3.fromRGB(255, 80, 90)
-}
-
---==================================================
--- HELPERS
---==================================================
-
-local function Corner(obj, radius)
-
-    local c =
-        Instance.new("UICorner")
-
-    c.CornerRadius =
-        UDim.new(0, radius)
-
-    c.Parent = obj
-
+local function Corner(object, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius or 10)
+    c.Parent = object
     return c
 end
 
-local function Border(obj, color, thickness)
-
-    local s =
-        Instance.new("UIStroke")
-
+local function Stroke(object, color, thickness)
+    local s = Instance.new("UIStroke")
     s.Color = color
     s.Thickness = thickness or 1
-    s.Transparency = 0.15
-
-    s.Parent = obj
-
+    s.Transparency = 0
+    s.Parent = object
     return s
 end
 
 local function Label(parent, text, size)
-
-    local l =
-        Instance.new("TextLabel")
+    local l = Instance.new("TextLabel")
 
     l.BackgroundTransparency = 1
-    l.Text = text
+    l.Text = text or ""
     l.TextColor3 = C.White
     l.TextSize = size or 14
-    l.Font = Enum.Font.GothamBold
-
+    l.Font = Enum.Font.Gotham
+    l.TextXAlignment = Enum.TextXAlignment.Left
     l.Parent = parent
 
     return l
 end
 
 local function Button(parent, text)
-
-    local b =
-        Instance.new("TextButton")
-
-    b.Size =
-        UDim2.new(1, 0, 0, 42)
-
-    b.BackgroundColor3 = C.Panel2
-    b.BorderSizePixel = 0
-
-    b.Text = text
-    b.TextColor3 = C.White
-    b.TextSize = 14
-    b.Font = Enum.Font.GothamBold
+    local b = Instance.new("TextButton")
 
     b.AutoButtonColor = false
-
+    b.BackgroundColor3 = C.Panel2
+    b.TextColor3 = C.White
+    b.Text = text
+    b.TextSize = 13
+    b.Font = Enum.Font.GothamMedium
+    b.BorderSizePixel = 0
     b.Parent = parent
 
     Corner(b, 9)
-
-    local stroke =
-        Border(
-            b,
-            Color3.fromRGB(50, 46, 62),
-            1
-        )
+    Stroke(b, C.Purple, 1)
 
     b.MouseEnter:Connect(function()
-
-        TweenService:Create(
-            b,
-            TweenInfo.new(0.15),
-            {
-                BackgroundColor3 =
-                    Color3.fromRGB(
-                        35, 29, 48
-                    )
-            }
-        ):Play()
-
-        stroke.Color = C.Purple
-
+        if AnimationsEnabled then
+            TweenService:Create(
+                b,
+                TweenInfo.new(0.12),
+                {BackgroundColor3 = C.Purple2}
+            ):Play()
+        end
     end)
 
     b.MouseLeave:Connect(function()
-
-        TweenService:Create(
-            b,
-            TweenInfo.new(0.15),
-            {
-                BackgroundColor3 = C.Panel2
-            }
-        ):Play()
-
-        stroke.Color =
-            Color3.fromRGB(
-                50, 46, 62
-            )
-
+        if AnimationsEnabled then
+            TweenService:Create(
+                b,
+                TweenInfo.new(0.12),
+                {BackgroundColor3 = C.Panel2}
+            ):Play()
+        end
     end)
 
     return b
 end
 
+local function Fade(object, transparency, duration)
+    if not AnimationsEnabled then
+        object.BackgroundTransparency = transparency
+        return
+    end
+
+    TweenService:Create(
+        object,
+        TweenInfo.new(duration or 0.35),
+        {BackgroundTransparency = transparency}
+    ):Play()
+end
+
 --==================================================
--- ECLIPSE INTRO
+-- INTRO
 --==================================================
 
-local Intro =
-    Instance.new("Frame")
-
-Intro.Size =
-    UDim2.new(1, 0, 1, 0)
-
-Intro.BackgroundColor3 =
-    Color3.fromRGB(0, 0, 0)
-
+local Intro = Instance.new("Frame")
+Intro.Size = UDim2.new(1, 0, 1, 0)
+Intro.Position = UDim2.new(0, 0, 0, 0)
+Intro.BackgroundColor3 = C.Black
 Intro.BorderSizePixel = 0
 Intro.ZIndex = 100
-
 Intro.Parent = Gui
 
-local IntroTitle =
-    Instance.new("TextLabel")
-
-IntroTitle.AnchorPoint =
-    Vector2.new(0.5, 0.5)
-
-IntroTitle.Position =
-    UDim2.new(0.5, 0, 0.5, 0)
-
-IntroTitle.Size =
-    UDim2.new(0.85, 0, 0, 90)
-
+local IntroTitle = Instance.new("TextLabel")
+IntroTitle.AnchorPoint = Vector2.new(0.5, 0.5)
+IntroTitle.Position = UDim2.new(0.5, 0, 0.5, 0)
+IntroTitle.Size = UDim2.new(0, 300, 0, 70)
 IntroTitle.BackgroundTransparency = 1
-
 IntroTitle.Text = "MT7 HUB"
-
 IntroTitle.TextColor3 = C.White
-IntroTitle.TextTransparency = 1
-
-IntroTitle.TextScaled = true
+IntroTitle.TextSize = 38
 IntroTitle.Font = Enum.Font.GothamBlack
-
+IntroTitle.TextTransparency = 1
 IntroTitle.Parent = Intro
 
 --==================================================
 -- KEY SCREEN
 --==================================================
 
-local KeyScreen =
-    Instance.new("Frame")
-
-KeyScreen.Size =
-    UDim2.new(1, 0, 1, 0)
-
+local KeyScreen = Instance.new("Frame")
+KeyScreen.Size = UDim2.new(1, 0, 1, 0)
 KeyScreen.BackgroundColor3 = C.Black
 KeyScreen.BorderSizePixel = 0
-
 KeyScreen.Visible = false
 KeyScreen.ZIndex = 90
-
 KeyScreen.Parent = Gui
 
-local KeyBox =
-    Instance.new("Frame")
-
-KeyBox.AnchorPoint =
-    Vector2.new(0.5, 0.5)
-
-KeyBox.Position =
-    UDim2.new(0.5, 0, 0.5, 0)
-
-KeyBox.Size =
-    UDim2.new(0.82, 0, 0, 245)
-
-KeyBox.BackgroundColor3 = C.Panel
+local KeyBox = Instance.new("Frame")
+KeyBox.AnchorPoint = Vector2.new(0.5, 0.5)
+KeyBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+KeyBox.Size = UDim2.new(0.84, 0, 0, 280)
+KeyBox.BackgroundColor3 = C.Background
 KeyBox.BorderSizePixel = 0
-
 KeyBox.Parent = KeyScreen
 
 Corner(KeyBox, 16)
+Stroke(KeyBox, C.Purple, 2)
 
-local KeyBorder =
-    Border(
-        KeyBox,
-        C.Purple,
-        1.5
-    )
+local KeyTitle = Label(KeyBox, "🔐 MT7 HUB", 25)
+KeyTitle.Position = UDim2.new(0, 22, 0, 22)
+KeyTitle.Size = UDim2.new(1, -44, 0, 35)
+KeyTitle.TextXAlignment = Enum.TextXAlignment.Center
+KeyTitle.Font = Enum.Font.GothamBold
 
-local KeyTitle =
-    Label(
-        KeyBox,
-        "🔐 MT7 HUB V4",
-        22
-    )
+local KeySub = Label(
+    KeyBox,
+    "Digite sua KEY ou entre no modo FREE",
+    12
+)
 
-KeyTitle.Size =
-    UDim2.new(1, -30, 0, 35)
+KeySub.Position = UDim2.new(0, 20, 0, 62)
+KeySub.Size = UDim2.new(1, -40, 0, 25)
+KeySub.TextXAlignment = Enum.TextXAlignment.Center
+KeySub.TextColor3 = C.SubText
 
-KeyTitle.Position =
-    UDim2.new(0, 15, 0, 18)
-
-local KeySubtitle =
-    Label(
-        KeyBox,
-        "Digite sua chave para continuar",
-        12
-    )
-
-KeySubtitle.Size =
-    UDim2.new(1, -30, 0, 25)
-
-KeySubtitle.Position =
-    UDim2.new(0, 15, 0, 52)
-
-KeySubtitle.TextColor3 = C.Gray
-
-local KeyInput =
-    Instance.new("TextBox")
-
-KeyInput.Size =
-    UDim2.new(1, -30, 0, 45)
-
-KeyInput.Position =
-    UDim2.new(0, 15, 0, 88)
-
+local KeyInput = Instance.new("TextBox")
+KeyInput.Position = UDim2.new(0.08, 0, 0, 100)
+KeyInput.Size = UDim2.new(0.84, 0, 0, 42)
 KeyInput.BackgroundColor3 = C.Panel2
-KeyInput.BorderSizePixel = 0
-
-KeyInput.PlaceholderText =
-    "Digite a KEY..."
-
-KeyInput.PlaceholderColor3 = C.Gray
-
-KeyInput.Text = ""
 KeyInput.TextColor3 = C.White
-KeyInput.TextSize = 14
-
-KeyInput.Font =
-    Enum.Font.Gotham
-
+KeyInput.PlaceholderColor3 = C.SubText
+KeyInput.PlaceholderText = "Digite a KEY..."
+KeyInput.Text = ""
+KeyInput.TextSize = 13
+KeyInput.Font = Enum.Font.Gotham
 KeyInput.ClearTextOnFocus = false
-
+KeyInput.BorderSizePixel = 0
 KeyInput.Parent = KeyBox
 
 Corner(KeyInput, 9)
+Stroke(KeyInput, C.Purple, 1)
 
-Border(
-    KeyInput,
-    Color3.fromRGB(55, 50, 70),
-    1
+local UnlockButton = Button(
+    KeyBox,
+    "🔓  DESBLOQUEAR KEY"
 )
 
-local KeyButton =
-    Button(
-        KeyBox,
-        "🔓 DESBLOQUEAR"
-    )
+UnlockButton.Position = UDim2.new(0.08, 0, 0, 154)
+UnlockButton.Size = UDim2.new(0.84, 0, 0, 42)
 
-KeyButton.Size =
-    UDim2.new(1, -30, 0, 42)
+local FreeButton = Button(
+    KeyBox,
+    "🆓  ENTRAR NO MODO FREE"
+)
 
-KeyButton.Position =
-    UDim2.new(0, 15, 0, 145)
+FreeButton.Position = UDim2.new(0.08, 0, 0, 204)
+FreeButton.Size = UDim2.new(0.84, 0, 0, 42)
 
-local KeyStatus =
-    Label(
-        KeyBox,
-        "",
-        12
-    )
-
-KeyStatus.Size =
-    UDim2.new(1, -30, 0, 25)
-
-KeyStatus.Position =
-    UDim2.new(0, 15, 0, 198)
-
-KeyStatus.TextColor3 = C.Gray
+local KeyStatus = Label(KeyBox, "", 11)
+KeyStatus.Position = UDim2.new(0.08, 0, 0, 250)
+KeyStatus.Size = UDim2.new(0.84, 0, 0, 20)
+KeyStatus.TextXAlignment = Enum.TextXAlignment.Center
 
 --==================================================
--- MAIN PANEL
+-- MAIN COMPACTA
 --==================================================
 
-local Main =
-    Instance.new("Frame")
+local Main = Instance.new("Frame")
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.Position = UDim2.new(0.5, 0, 0.5, 0)
 
-Main.AnchorPoint =
-    Vector2.new(0.5, 0.5)
-
-Main.Position =
-    UDim2.new(0.5, 0, 0.5, 0)
-
-Main.Size =
-    UDim2.new(0.9, 0, 0, 420)
+-- PEQUENA E RESPONSIVA
+Main.Size = UDim2.new(0.82, 0, 0, 350)
 
 Main.BackgroundColor3 = C.Background
 Main.BorderSizePixel = 0
-
 Main.Visible = false
-Main.ZIndex = 10
-
+Main.ClipsDescendants = true
 Main.Parent = Gui
 
-Corner(Main, 16)
+Corner(Main, 15)
+local MainBorder = Stroke(Main, C.Purple, 2)
 
-local MainBorder =
-    Border(
-        Main,
-        C.Purple,
-        1.5
-    )
+-- Limita o tamanho em telas grandes
+local SizeLimit = Instance.new("UISizeConstraint")
+SizeLimit.MinSize = Vector2.new(280, 300)
+SizeLimit.MaxSize = Vector2.new(520, 390)
+SizeLimit.Parent = Main
 
 --==================================================
 -- HEADER
 --==================================================
 
-local Header =
-    Instance.new("Frame")
-
-Header.Size =
-    UDim2.new(1, 0, 0, 62)
-
-Header.BackgroundTransparency = 1
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 58)
+Header.BackgroundColor3 = C.Panel
+Header.BorderSizePixel = 0
 Header.Parent = Main
 
-local Title =
-    Label(
-        Header,
-        "🌙 MT7 HUB V4",
-        20
-    )
+local HeaderTitle = Label(Header, "🌙 MT7 HUB", 18)
+HeaderTitle.Position = UDim2.new(0, 16, 0, 8)
+HeaderTitle.Size = UDim2.new(0.55, 0, 0, 25)
+HeaderTitle.Font = Enum.Font.GothamBold
 
-Title.Size =
-    UDim2.new(1, -100, 0, 30)
+local ModeLabel = Label(Header, "FREE MODE", 10)
+ModeLabel.Position = UDim2.new(0, 17, 0, 33)
+ModeLabel.Size = UDim2.new(0.5, 0, 0, 17)
+ModeLabel.TextColor3 = C.SubText
 
-Title.Position =
-    UDim2.new(0, 18, 0, 8)
-
-Title.TextXAlignment =
-    Enum.TextXAlignment.Left
-
-local ModeLabel =
-    Label(
-        Header,
-        "FREE MODE",
-        11
-    )
-
-ModeLabel.Size =
-    UDim2.new(0, 90, 0, 22)
-
-ModeLabel.Position =
-    UDim2.new(1, -105, 0, 13)
-
-ModeLabel.TextColor3 = C.Purple
-
-ModeLabel.TextXAlignment =
-    Enum.TextXAlignment.Right
-
-local Status =
-    Label(
-        Header,
-        "● Sistema pronto",
-        11
-    )
-
-Status.Size =
-    UDim2.new(1, -36, 0, 18)
-
-Status.Position =
-    UDim2.new(0, 18, 0, 35)
-
-Status.TextColor3 = C.Green
-Status.TextXAlignment =
-    Enum.TextXAlignment.Left
+local ModeButton = Button(Header, "FREE")
+ModeButton.Position = UDim2.new(1, -82, 0, 15)
+ModeButton.Size = UDim2.new(0, 68, 0, 30)
 
 --==================================================
 -- SIDEBAR
 --==================================================
 
-local Side =
-    Instance.new("Frame")
+local Sidebar = Instance.new("Frame")
+Sidebar.Position = UDim2.new(0, 8, 0, 66)
+Sidebar.Size = UDim2.new(0, 58, 1, -74)
+Sidebar.BackgroundColor3 = C.Panel
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = Main
 
-Side.Size =
-    UDim2.new(0, 82, 1, -72)
-
-Side.Position =
-    UDim2.new(0, 10, 0, 65)
-
-Side.BackgroundTransparency = 1
-
-Side.Parent = Main
-
-local SideLayout =
-    Instance.new("UIListLayout")
-
-SideLayout.Padding =
-    UDim.new(0, 7)
-
-SideLayout.Parent = Side
-
-local HomeButton =
-    Button(Side, "⌂")
-
-local MonitorTab =
-    Button(Side, "📊")
-
-local ThemeTab =
-    Button(Side, "🎨")
-
-local SettingsTab =
-    Button(Side, "⚙️")
-
-local ModeTab =
-    Button(Side, "🔄")
+Corner(Sidebar, 10)
 
 --==================================================
--- CONTENT
+-- ÁREA DE PÁGINAS
 --==================================================
 
-local Content =
-    Instance.new("Frame")
-
-Content.Position =
-    UDim2.new(0, 102, 0, 72)
-
-Content.Size =
-    UDim2.new(1, -112, 1, -82)
-
-Content.BackgroundTransparency = 1
-
-Content.Parent = Main
+local Pages = Instance.new("Frame")
+Pages.Position = UDim2.new(0, 74, 0, 66)
+Pages.Size = UDim2.new(1, -82, 1, -74)
+Pages.BackgroundTransparency = 1
+Pages.Parent = Main
 
 --==================================================
--- HOME PAGE
+-- BOTÃO FLUTUANTE
 --==================================================
 
-local Home =
-    Instance.new("Frame")
+local Floating = Instance.new("TextButton")
+Floating.Size = UDim2.new(0, 52, 0, 52)
+Floating.Position = UDim2.new(0, 18, 0.5, -26)
+Floating.BackgroundColor3 = C.Black
+Floating.Text = "MT7"
+Floating.TextColor3 = C.White
+Floating.TextSize = 13
+Floating.Font = Enum.Font.GothamBold
+Floating.BorderSizePixel = 0
+Floating.Visible = false
+Floating.Parent = Gui
 
-Home.Size =
-    UDim2.new(1, 0, 1, 0)
-
-Home.BackgroundTransparency = 1
-Home.Parent = Content
-
-local HomeLayout =
-    Instance.new("UIListLayout")
-
-HomeLayout.Padding =
-    UDim.new(0, 8)
-
-HomeLayout.Parent = Home
-
-local MonitorButton =
-    Button(
-        Home,
-        "📊  Monitor FPS / Ping"
-    )
-
-local FPSButton =
-    Button(
-        Home,
-        "🚀  FPS Booster • OFF"
-    )
-
-local AnimButton =
-    Button(
-        Home,
-        "🎭  Animações • ON"
-    )
-
-local ThemeButton =
-    Button(
-        Home,
-        "🎨  Tema: Eclipse"
-    )
-
-local MobileButton =
-    Button(
-        Home,
-        "📱  Modo Mobile • ON"
-    )
-
-local ConfigButton =
-    Button(
-        Home,
-        "⚙️  Configurações"
-    )
+Corner(Floating, 26)
+local FloatingStroke = Stroke(Floating, C.Purple, 2)
 
 --==================================================
--- PAGES
+-- FIM DA PARTE 1
+--==================================================
+--==================================================
+-- MT7 HUB V4.1
+-- PARTE 2/5
+-- PÁGINAS + MENU + HOME + MONITOR
 --==================================================
 
-local function NewPage()
+--==================================================
+-- FUNÇÃO PARA CRIAR PÁGINA
+--==================================================
 
-    local page =
-        Instance.new("Frame")
+local PagesList = {}
 
-    page.Size =
-        UDim2.new(1, 0, 1, 0)
+local function CreatePage(name)
+    local page = Instance.new("Frame")
 
+    page.Name = name
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.Position = UDim2.new(0, 0, 0, 0)
     page.BackgroundTransparency = 1
     page.Visible = false
+    page.Parent = Pages
 
-    page.Parent = Content
+    PagesList[name] = page
 
     return page
 end
 
-local MonitorPage = NewPage()
-local ThemePage = NewPage()
-local SettingsPage = NewPage()
-
---==================================================
--- PAGE SWITCH
---==================================================
-
-local Pages = {
-    Home = Home,
-    Monitor = MonitorPage,
-    Theme = ThemePage,
-    Settings = SettingsPage
-}
-
 local function ShowPage(name)
-
-    for pageName, page in pairs(Pages) do
-        page.Visible =
-            pageName == name
+    for pageName, page in pairs(PagesList) do
+        page.Visible = (pageName == name)
     end
-
 end
+
+--==================================================
+-- PÁGINAS
+--==================================================
+
+local HomePage = CreatePage("Home")
+local MonitorPage = CreatePage("Monitor")
+local ThemePage = CreatePage("Theme")
+local SettingsPage = CreatePage("Settings")
+local KeyPage = CreatePage("KeyPage")
+
+--==================================================
+-- FUNÇÃO DE BOTÃO DO MENU
+--==================================================
+
+local function MenuButton(text, y)
+    local b = Button(Sidebar, text)
+
+    b.Position = UDim2.new(0, 6, 0, y)
+    b.Size = UDim2.new(1, -12, 0, 48)
+    b.TextSize = 20
+
+    return b
+end
+
+--==================================================
+-- BOTÕES LATERAIS
+--==================================================
+
+local HomeButton = MenuButton("⌂", 8)
+local MonitorButton = MenuButton("📊", 62)
+local ThemeButton = MenuButton("🎨", 116)
+local SettingsButton = MenuButton("⚙️", 170)
+local ModeTab = MenuButton("🔄", 224)
+
+--==================================================
+-- TEXTO DO MENU
+--==================================================
+
+HomeButton.Text = "⌂"
+MonitorButton.Text = "📊"
+ThemeButton.Text = "🎨"
+SettingsButton.Text = "⚙️"
+ModeTab.Text = "🔄"
+
+--==================================================
+-- HOME
+--==================================================
+
+local HomeTitle = Label(HomePage, "Bem-vindo ao MT7", 21)
+HomeTitle.Position = UDim2.new(0, 10, 0, 8)
+HomeTitle.Size = UDim2.new(1, -20, 0, 30)
+HomeTitle.Font = Enum.Font.GothamBold
+
+local HomeSub = Label(
+    HomePage,
+    "Hub de otimização • V4.1",
+    11
+)
+
+HomeSub.Position = UDim2.new(0, 10, 0, 38)
+HomeSub.Size = UDim2.new(1, -20, 0, 20)
+HomeSub.TextColor3 = C.SubText
+
+--==================================================
+-- STATUS BOX
+--==================================================
+
+local StatusBox = Instance.new("Frame")
+StatusBox.Position = UDim2.new(0, 10, 0, 70)
+StatusBox.Size = UDim2.new(1, -20, 0, 86)
+StatusBox.BackgroundColor3 = C.Panel
+StatusBox.BorderSizePixel = 0
+StatusBox.Parent = HomePage
+
+Corner(StatusBox, 11)
+Stroke(StatusBox, C.Purple, 1)
+
+local StatusTitle = Label(
+    StatusBox,
+    "⚡ STATUS",
+    13
+)
+
+StatusTitle.Position = UDim2.new(0, 12, 0, 9)
+StatusTitle.Size = UDim2.new(1, -24, 0, 20)
+StatusTitle.Font = Enum.Font.GothamBold
+
+local StatusText = Label(
+    StatusBox,
+    "Sistema pronto",
+    11
+)
+
+StatusText.Position = UDim2.new(0, 12, 0, 34)
+StatusText.Size = UDim2.new(1, -24, 0, 20)
+StatusText.TextColor3 = C.Green
+
+local ModeStatus = Label(
+    StatusBox,
+    "Modo: FREE",
+    10
+)
+
+ModeStatus.Position = UDim2.new(0, 12, 0, 56)
+ModeStatus.Size = UDim2.new(0.5, 0, 0, 18)
+ModeStatus.TextColor3 = C.SubText
+
+--==================================================
+-- HOME BOTÕES
+--==================================================
+
+local FPSHomeButton = Button(
+    HomePage,
+    "🚀  FPS BOOSTER"
+)
+
+FPSHomeButton.Position = UDim2.new(0, 10, 0, 168)
+FPSHomeButton.Size = UDim2.new(0.48, -8, 0, 42)
+
+local MobileHomeButton = Button(
+    HomePage,
+    "📱  MOBILE"
+)
+
+MobileHomeButton.Position = UDim2.new(0.52, -2, 0, 168)
+MobileHomeButton.Size = UDim2.new(0.48, -8, 0, 42)
+
+local HomeInfo = Label(
+    HomePage,
+    "O MT7 reduz cargas gráficas desnecessárias\nsem automatizar ações do jogo.",
+    10
+)
+
+HomeInfo.Position = UDim2.new(0, 10, 0, 220)
+HomeInfo.Size = UDim2.new(1, -20, 0, 50)
+HomeInfo.TextColor3 = C.SubText
+HomeInfo.TextWrapped = true
 
 --==================================================
 -- MONITOR PAGE
 --==================================================
 
-local MonitorTitle =
-    Label(
-        MonitorPage,
-        "📊 MONITOR",
-        18
-    )
+local MonitorTitle = Label(
+    MonitorPage,
+    "📊 MONITOR",
+    20
+)
 
-MonitorTitle.Size =
-    UDim2.new(1, 0, 0, 35)
+MonitorTitle.Position = UDim2.new(0, 10, 0, 8)
+MonitorTitle.Size = UDim2.new(1, -20, 0, 30)
+MonitorTitle.Font = Enum.Font.GothamBold
 
-MonitorTitle.Position =
-    UDim2.new(0, 0, 0, 0)
+local MonitorStatus = Label(
+    MonitorPage,
+    "Monitor aguardando...",
+    11
+)
 
-local MonitorInfo =
-    Label(
-        MonitorPage,
-        "FPS: --\nPING: -- ms",
-        16
-    )
-
-MonitorInfo.Size =
-    UDim2.new(1, 0, 0, 70)
-
-MonitorInfo.Position =
-    UDim2.new(0, 0, 0, 50)
-
-MonitorInfo.TextXAlignment =
-    Enum.TextXAlignment.Left
-
-MonitorInfo.TextYAlignment =
-    Enum.TextYAlignment.Center
-
-local MonitorToggle =
-    Button(
-        MonitorPage,
-        "📊 Ativar Monitor"
-    )
-
-MonitorToggle.Position =
-    UDim2.new(0, 0, 0, 135)
-
-MonitorToggle.Size =
-    UDim2.new(1, 0, 0, 42)
+MonitorStatus.Position = UDim2.new(0, 10, 0, 40)
+MonitorStatus.Size = UDim2.new(1, -20, 0, 20)
+MonitorStatus.TextColor3 = C.SubText
 
 --==================================================
--- THEME PAGE
+-- FPS BOX
 --==================================================
 
-local ThemeTitle =
-    Label(
-        ThemePage,
-        "🎨 TEMAS",
-        18
-    )
+local FPSBox = Instance.new("Frame")
+FPSBox.Position = UDim2.new(0, 10, 0, 70)
+FPSBox.Size = UDim2.new(1, -20, 0, 62)
+FPSBox.BackgroundColor3 = C.Panel
+FPSBox.BorderSizePixel = 0
+FPSBox.Parent = MonitorPage
 
-ThemeTitle.Size =
-    UDim2.new(1, 0, 0, 35)
+Corner(FPSBox, 10)
+Stroke(FPSBox, C.Purple, 1)
 
-local EclipseTheme =
-    Button(
-        ThemePage,
-        "🌑 Eclipse"
-    )
+local FPSTitle = Label(
+    FPSBox,
+    "FPS",
+    11
+)
 
-EclipseTheme.Position =
-    UDim2.new(0, 0, 0, 48)
+FPSTitle.Position = UDim2.new(0, 12, 0, 8)
+FPSTitle.Size = UDim2.new(0.5, 0, 0, 18)
+FPSTitle.Font = Enum.Font.GothamBold
 
-local PurpleTheme =
-    Button(
-        ThemePage,
-        "💜 Purple"
-    )
+local FPSValue = Label(
+    FPSBox,
+    "--",
+    22
+)
 
-PurpleTheme.Position =
-    UDim2.new(0, 0, 0, 98)
-
-local BlueTheme =
-    Button(
-        ThemePage,
-        "💙 Blue"
-    )
-
-BlueTheme.Position =
-    UDim2.new(0, 0, 0, 148)
-
-local BlackTheme =
-    Button(
-        ThemePage,
-        "🖤 Black"
-    )
-
-BlackTheme.Position =
-    UDim2.new(0, 0, 0, 198)
-
-local MoonTheme =
-    Button(
-        ThemePage,
-        "🌙 Moon"
-    )
-
-MoonTheme.Position =
-    UDim2.new(0, 0, 0, 248)
+FPSValue.Position = UDim2.new(0.5, 0, 0, 7)
+FPSValue.Size = UDim2.new(0.45, 0, 0, 28)
+FPSValue.TextXAlignment = Enum.TextXAlignment.Right
+FPSValue.Font = Enum.Font.GothamBold
+FPSValue.TextColor3 = C.Green
 
 --==================================================
--- SETTINGS PAGE
+-- PING BOX
 --==================================================
 
-local SettingsTitle =
-    Label(
-        SettingsPage,
-        "⚙️ CONFIGURAÇÕES",
-        18
-    )
+local PingBox = Instance.new("Frame")
+PingBox.Position = UDim2.new(0, 10, 0, 142)
+PingBox.Size = UDim2.new(1, -20, 0, 62)
+PingBox.BackgroundColor3 = C.Panel
+PingBox.BorderSizePixel = 0
+PingBox.Parent = MonitorPage
 
-SettingsTitle.Size =
-    UDim2.new(1, 0, 0, 35)
+Corner(PingBox, 10)
+Stroke(PingBox, C.Blue, 1)
 
-local SettingsInfo =
-    Label(
-        SettingsPage,
-        "Configurações gerais do MT7 Hub",
-        12
-    )
+local PingTitle = Label(
+    PingBox,
+    "PING",
+    11
+)
 
-SettingsInfo.Size =
-    UDim2.new(1, 0, 0, 25)
+PingTitle.Position = UDim2.new(0, 12, 0, 8)
+PingTitle.Size = UDim2.new(0.5, 0, 0, 18)
+PingTitle.Font = Enum.Font.GothamBold
 
-SettingsInfo.Position =
-    UDim2.new(0, 0, 0, 32)
+local PingValue = Label(
+    PingBox,
+    "-- ms",
+    22
+)
 
-SettingsInfo.TextColor3 = C.Gray
-
-local FPSSetting =
-    Button(
-        SettingsPage,
-        "🚀 FPS Booster"
-    )
-
-FPSSetting.Position =
-    UDim2.new(0, 0, 0, 70)
-
-local AnimSetting =
-    Button(
-        SettingsPage,
-        "🎭 Animações"
-    )
-
-AnimSetting.Position =
-    UDim2.new(0, 0, 0, 120)
-
-local MobileSetting =
-    Button(
-        SettingsPage,
-        "📱 Modo Mobile"
-    )
-
-MobileSetting.Position =
-    UDim2.new(0, 0, 0, 170)
-
-local MonitorSetting =
-    Button(
-        SettingsPage,
-        "📊 Monitor"
-    )
-
-MonitorSetting.Position =
-    UDim2.new(0, 0, 0, 220)
---==================================================
--- MT7 HUB V4
--- CONTINUAÇÃO
--- KEY / FREE / BUTTONS / START
---==================================================
+PingValue.Position = UDim2.new(0.5, 0, 0, 7)
+PingValue.Size = UDim2.new(0.45, 0, 0, 28)
+PingValue.TextXAlignment = Enum.TextXAlignment.Right
+PingValue.Font = Enum.Font.GothamBold
+PingValue.TextColor3 = C.Blue
 
 --==================================================
--- STATE
+-- TARGET FPS
 --==================================================
 
-local Unlocked = false
-local CurrentMode = "FREE"
+local TargetButton = Button(
+    MonitorPage,
+    "🎯 FPS TARGET: 70"
+)
 
-local FPSEnabled = false
-local AnimationsEnabled = true
-local MobileEnabled = true
-local MonitorEnabled = false
-
---==================================================
--- FREE / KEY MODE BUTTON
---==================================================
-
-local ModeButton =
-    Button(
-        Header,
-        "FREE"
-    )
-
-ModeButton.Size =
-    UDim2.new(0, 70, 0, 28)
-
-ModeButton.Position =
-    UDim2.new(1, -185, 0, 35)
-
-ModeButton.TextSize = 11
-
-ModeButton.Visible = false
+TargetButton.Position = UDim2.new(0, 10, 0, 216)
+TargetButton.Size = UDim2.new(1, -20, 0, 40)
 
 --==================================================
--- KEY PAGE
+-- MONITOR LOOP
 --==================================================
 
-local KeyPage =
-    Instance.new("Frame")
+local FPSCounter = 0
+local FPSLast = tick()
 
-KeyPage.Size =
-    UDim2.new(1, 0, 1, 0)
+task.spawn(function()
+    while Gui.Parent do
+        task.wait(1)
 
-KeyPage.BackgroundTransparency = 1
+        if MonitorEnabled then
+            local now = tick()
+            local elapsed = now - FPSLast
 
-KeyPage.Visible = false
-
-KeyPage.Parent = Content
-
-local KeyPageTitle =
-    Label(
-        KeyPage,
-        "🔐 ÁREA KEY",
-        20
-    )
-
-KeyPageTitle.Size =
-    UDim2.new(1, 0, 0, 35)
-
-local KeyPageInfo =
-    Label(
-        KeyPage,
-        "Recursos disponíveis após desbloqueio.",
-        12
-    )
-
-KeyPageInfo.Size =
-    UDim2.new(1, 0, 0, 25)
-
-KeyPageInfo.Position =
-    UDim2.new(0, 0, 0, 38)
-
-KeyPageInfo.TextColor3 = C.Gray
-
-local KeyStatusButton =
-    Button(
-        KeyPage,
-        "🔒 KEY BLOQUEADA"
-    )
-
-KeyStatusButton.Position =
-    UDim2.new(0, 0, 0, 80)
-
---==================================================
--- KEY VALIDATION
---==================================================
-
-local VALID_KEY = "MT7-V4-2026"
-
-local function UnlockHub()
-
-    Unlocked = true
-    CurrentMode = "KEY"
-
-    KeyScreen.Visible = false
-    Main.Visible = true
-
-    ModeButton.Visible = true
-    ModeButton.Text = "KEY"
-
-    ModeLabel.Text = "KEY MODE"
-
-    KeyStatus.Text =
-        "✅ KEY VALIDADA"
-
-    KeyStatus.TextColor3 =
-        C.Green
-
-    KeyStatusButton.Text =
-        "🔓 KEY DESBLOQUEADA"
-
-    Status.Text =
-        "● Sistema desbloqueado"
-
-    Status.TextColor3 =
-        C.Green
-
-    -- Eclipse animation
-
-    if MT7Animations then
-
-        pcall(function()
-
-            if MT7Animations.Eclipse then
-                MT7Animations.Eclipse(Main)
+            if elapsed > 0 then
+                FPSValue.Text = tostring(
+                    math.floor(FPSCounter / elapsed)
+                )
             end
 
-        end)
+            FPSCounter = 0
+            FPSLast = now
 
+            local ok, ping = pcall(function()
+                return Player:GetNetworkPing() * 1000
+            end)
+
+            if ok and ping then
+                PingValue.Text =
+                    tostring(math.floor(ping)) .. " ms"
+            end
+        end
     end
-end
+end)
 
-KeyButton.MouseButton1Click:Connect(function()
+task.spawn(function()
+    while Gui.Parent do
+        task.wait()
 
-    local typed =
-        tostring(KeyInput.Text)
-
-    if typed == VALID_KEY then
-
-        UnlockHub()
-
-    else
-
-        KeyStatus.Text =
-            "❌ KEY inválida"
-
-        KeyStatus.TextColor3 =
-            C.Red
-
-        KeyInput.Text = ""
-
+        if MonitorEnabled then
+            FPSCounter = FPSCounter + 1
+        end
     end
-
 end)
 
 --==================================================
--- PAGE SWITCH UPDATE
+-- NAVEGAÇÃO
 --==================================================
-
-local function OpenPage(name)
-
-    ShowPage(name)
-
-    KeyPage.Visible =
-        name == "Key"
-
-end
 
 HomeButton.MouseButton1Click:Connect(function()
-    OpenPage("Home")
+    ShowPage("Home")
 end)
-
-MonitorTab.MouseButton1Click:Connect(function()
-    OpenPage("Monitor")
-end)
-
-ThemeTab.MouseButton1Click:Connect(function()
-    OpenPage("Theme")
-end)
-
-SettingsTab.MouseButton1Click:Connect(function()
-    OpenPage("Settings")
-end)
-
---==================================================
--- MAIN BUTTONS
---==================================================
 
 MonitorButton.MouseButton1Click:Connect(function()
-
-    OpenPage("Monitor")
-
-end)
-
-ConfigButton.MouseButton1Click:Connect(function()
-
-    OpenPage("Settings")
-
+    ShowPage("Monitor")
 end)
 
 ThemeButton.MouseButton1Click:Connect(function()
+    ShowPage("Theme")
+end)
 
-    OpenPage("Theme")
-
+SettingsButton.MouseButton1Click:Connect(function()
+    ShowPage("Settings")
 end)
 
 --==================================================
--- FPS BOOSTER
+-- FIM DA PARTE 2
+--==================================================
+--==================================================
+-- MT7 HUB V4.1
+-- PARTE 3/3
+-- FINALIZAÇÃO + ANIMAÇÕES + MOBILE
 --==================================================
 
-local function UpdateFPSButton()
-
-    if FPSEnabled then
-
-        FPSButton.Text =
-            "🚀  FPS Booster • ON"
-
-        FPSButton.TextColor3 =
-            C.Green
-
-    else
-
-        FPSButton.Text =
-            "🚀  FPS Booster • OFF"
-
-        FPSButton.TextColor3 =
-            C.White
-
-    end
-
-end
-
-local function ToggleFPS()
-
-    FPSEnabled =
-        not FPSEnabled
-
-    UpdateFPSButton()
-
-    if MT7FPS then
-
-        pcall(function()
-
-            if FPSEnabled then
-
-                if MT7FPS.Start then
-                    MT7FPS.Start()
-                elseif MT7FPS.Enable then
-                    MT7FPS.Enable()
-                end
-
-            else
-
-                if MT7FPS.Stop then
-                    MT7FPS.Stop()
-                elseif MT7FPS.Disable then
-                    MT7FPS.Disable()
-                end
-
-            end
-
-        end)
-
-    end
-
-end
-
-FPSButton.MouseButton1Click:Connect(
-    ToggleFPS
-)
-
-FPSSetting.MouseButton1Click:Connect(
-    ToggleFPS
-)
-
 --==================================================
--- ANIMATIONS
+-- TAMANHO COMPACTO
 --==================================================
 
-local function ToggleAnimations()
+pcall(function()
+    Main.Size = UDim2.new(0.78, 0, 0, 350)
 
-    AnimationsEnabled =
-        not AnimationsEnabled
+    local Constraint = Main:FindFirstChildOfClass("UISizeConstraint")
 
-    if AnimationsEnabled then
-
-        AnimButton.Text =
-            "🎭  Animações • ON"
-
-        AnimSetting.Text =
-            "🎭  Animações • ON"
-
-    else
-
-        AnimButton.Text =
-            "🎭  Animações • OFF"
-
-        AnimSetting.Text =
-            "🎭  Animações • OFF"
-
+    if not Constraint then
+        Constraint = Instance.new("UISizeConstraint")
+        Constraint.Parent = Main
     end
 
-end
-
-AnimButton.MouseButton1Click:Connect(
-    ToggleAnimations
-)
-
-AnimSetting.MouseButton1Click:Connect(
-    ToggleAnimations
-)
-
---==================================================
--- MOBILE MODE
---==================================================
-
-local function ToggleMobile()
-
-    MobileEnabled =
-        not MobileEnabled
-
-    if MobileEnabled then
-
-        MobileButton.Text =
-            "📱  Modo Mobile • ON"
-
-        MobileSetting.Text =
-            "📱  Modo Mobile • ON"
-
-    else
-
-        MobileButton.Text =
-            "📱  Modo Mobile • OFF"
-
-        MobileSetting.Text =
-            "📱  Modo Mobile • OFF"
-
-    end
-
-end
-
-MobileButton.MouseButton1Click:Connect(
-    ToggleMobile
-)
-
-MobileSetting.MouseButton1Click:Connect(
-    ToggleMobile
-)
-
---==================================================
--- MONITOR
---==================================================
-
-local function StartMonitor()
-
-    MonitorEnabled = true
-
-    MonitorButton.Text =
-        "📊  Monitor FPS / Ping • ON"
-
-    MonitorToggle.Text =
-        "📊  Monitor Ativo"
-
-    MonitorSetting.Text =
-        "📊  Monitor • ON"
-
-    if MT7Monitor then
-
-        pcall(function()
-
-            if MT7Monitor.Start then
-                MT7Monitor.Start()
-            end
-
-        end)
-
-    end
-
-end
-
-local function StopMonitor()
-
-    MonitorEnabled = false
-
-    MonitorButton.Text =
-        "📊  Monitor FPS / Ping"
-
-    MonitorToggle.Text =
-        "📊  Ativar Monitor"
-
-    MonitorSetting.Text =
-        "📊  Monitor • OFF"
-
-    if MT7Monitor then
-
-        pcall(function()
-
-            if MT7Monitor.Stop then
-                MT7Monitor.Stop()
-            end
-
-        end)
-
-    end
-
-end
-
-MonitorToggle.MouseButton1Click:Connect(function()
-
-    if MonitorEnabled then
-        StopMonitor()
-    else
-        StartMonitor()
-    end
-
-end)
-
-MonitorSetting.MouseButton1Click:Connect(function()
-
-    if MonitorEnabled then
-        StopMonitor()
-    else
-        StartMonitor()
-    end
-
+    Constraint.MinSize = Vector2.new(280, 260)
+    Constraint.MaxSize = Vector2.new(520, 420)
 end)
 
 --==================================================
--- THEME SYSTEM
+-- ARREDONDAMENTO
 --==================================================
 
-local function ApplyTheme(name)
+pcall(function()
+    local Corner = Main:FindFirstChildOfClass("UICorner")
 
-    if MT7Themes then
-
-        pcall(function()
-
-            if MT7Themes.Set then
-                MT7Themes.Set(name)
-            end
-
-        end)
-
+    if Corner then
+        Corner.CornerRadius = UDim.new(0, 14)
     end
-
-    ThemeButton.Text =
-        "🎨  Tema: " .. name
-
-    -- Basic interface colors
-
-    if name == "Purple" then
-
-        MainBorder.Color =
-            Color3.fromRGB(
-                170, 70, 255
-            )
-
-    elseif name == "Blue" then
-
-        MainBorder.Color =
-            Color3.fromRGB(
-                70, 140, 255
-            )
-
-    elseif name == "Black" then
-
-        MainBorder.Color =
-            Color3.fromRGB(
-                90, 90, 100
-            )
-
-    elseif name == "Moon" then
-
-        MainBorder.Color =
-            Color3.fromRGB(
-                180, 190, 230
-            )
-
-    else
-
-        MainBorder.Color =
-            C.Purple
-
-    end
-
-end
-
-EclipseTheme.MouseButton1Click:Connect(
-    function()
-        ApplyTheme("Eclipse")
-    end
-)
-
-PurpleTheme.MouseButton1Click:Connect(
-    function()
-        ApplyTheme("Purple")
-    end
-)
-
-BlueTheme.MouseButton1Click:Connect(
-    function()
-        ApplyTheme("Blue")
-    end
-)
-
-BlackTheme.MouseButton1Click:Connect(
-    function()
-        ApplyTheme("Black")
-    end
-)
-
-MoonTheme.MouseButton1Click:Connect(
-    function()
-        ApplyTheme("Moon")
-    end
-)
+end)
 
 --==================================================
--- FREE / KEY SWITCH
+-- BOTÃO FLUTUANTE
 --==================================================
 
-ModeButton.MouseButton1Click:Connect(function()
+pcall(function()
+    Floating.Size = UDim2.new(0, 54, 0, 54)
+    Floating.Position = UDim2.new(0, 18, 0.5, -27)
+    Floating.Text = "MT7"
+    Floating.TextSize = 13
+    Floating.BackgroundColor3 = Color3.fromRGB(5, 5, 8)
+    Floating.TextColor3 = Color3.fromRGB(255, 255, 255)
+end)
 
-    if not Unlocked then
+--==================================================
+-- FUNÇÃO DE ANIMAÇÃO
+--==================================================
+
+local function TweenObject(object, time, properties)
+    if not object then
         return
     end
 
-    if CurrentMode == "FREE" then
+    pcall(function()
+        TweenService:Create(
+            object,
+            TweenInfo.new(
+                time,
+                Enum.EasingStyle.Quad,
+                Enum.EasingDirection.Out
+            ),
+            properties
+        ):Play()
+    end)
+end
 
-        CurrentMode = "KEY"
+--==================================================
+-- ABRIR HUB
+--==================================================
 
-        ModeButton.Text = "KEY"
-        ModeLabel.Text = "KEY MODE"
+local HubOpen = true
 
-        Home.Visible = false
-        KeyPage.Visible = true
+local function OpenHub()
+    if HubOpen then
+        return
+    end
 
-        for name, page in pairs(Pages) do
-            page.Visible = false
+    HubOpen = true
+    Main.Visible = true
+
+    local targetSize = UDim2.new(0.78, 0, 0, 350)
+
+    Main.Size = UDim2.new(0.70, 0, 0, 300)
+
+    TweenObject(Main, 0.25, {
+        Size = targetSize
+    })
+
+    pcall(function()
+        Floating.Text = "×"
+    end)
+end
+
+--==================================================
+-- FECHAR HUB
+--==================================================
+
+local function CloseHub()
+    if not HubOpen then
+        return
+    end
+
+    HubOpen = false
+
+    TweenObject(Main, 0.20, {
+        Size = UDim2.new(0.70, 0, 0, 300)
+    })
+
+    task.delay(0.20, function()
+        if not HubOpen then
+            Main.Visible = false
+        end
+    end)
+
+    pcall(function()
+        Floating.Text = "MT7"
+    end)
+end
+
+--==================================================
+-- BOTÃO FLUTUANTE
+--==================================================
+
+pcall(function()
+    Floating.MouseButton1Click:Connect(function()
+        if HubOpen then
+            CloseHub()
+        else
+            OpenHub()
+        end
+    end)
+end)
+
+--==================================================
+-- ANIMAÇÃO DO BOTÃO
+--==================================================
+
+pcall(function()
+
+    Floating.MouseEnter:Connect(function()
+
+        TweenObject(Floating, 0.12, {
+            Size = UDim2.new(0, 58, 0, 58)
+        })
+
+    end)
+
+    Floating.MouseLeave:Connect(function()
+
+        TweenObject(Floating, 0.12, {
+            Size = UDim2.new(0, 54, 0, 54)
+        })
+
+    end)
+
+end)
+
+--==================================================
+-- ARRASTAR BOTÃO NO CELULAR
+--==================================================
+
+pcall(function()
+
+    local dragging = false
+    local dragStart
+    local startPosition
+
+    Floating.InputBegan:Connect(function(input)
+
+        if input.UserInputType == Enum.UserInputType.Touch
+        or input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+            dragging = true
+            dragStart = input.Position
+            startPosition = Floating.Position
+
         end
 
-    else
+    end)
 
-        CurrentMode = "FREE"
-
-        ModeButton.Text = "FREE"
-        ModeLabel.Text = "FREE MODE"
-
-        KeyPage.Visible = false
-
-        ShowPage("Home")
-
-    end
-
-end)
-
---==================================================
--- FLOATING BUTTON
---==================================================
-
-local Floating =
-    Instance.new("TextButton")
-
-Floating.Name =
-    "MT7FloatingButton"
-
-Floating.Size =
-    UDim2.new(0, 62, 0, 62)
-
-Floating.Position =
-    UDim2.new(
-        0,
-        25,
-        0.5,
-        -31
-    )
-
-Floating.BackgroundColor3 =
-    Color3.fromRGB(5, 5, 7)
-
-Floating.Text =
-    "MT7"
-
-Floating.TextColor3 =
-    C.White
-
-Floating.TextSize = 17
-
-Floating.Font =
-    Enum.Font.GothamBlack
-
-Floating.AutoButtonColor = false
-
-Floating.ZIndex = 50
-
-Floating.Parent = Gui
-
-Corner(
-    Floating,
-    100
-)
-
-local FloatingStroke =
-    Border(
-        Floating,
-        C.Purple,
-        2
-    )
-
---==================================================
--- FLOATING BUTTON DRAG
---==================================================
-
-local dragging = false
-local dragStart
-local startPosition
-
-Floating.InputBegan:Connect(function(input)
-
-    if
-        input.UserInputType ==
-        Enum.UserInputType.MouseButton1
-        or
-        input.UserInputType ==
-        Enum.UserInputType.Touch
-    then
-
-        dragging = true
-
-        dragStart =
-            input.Position
-
-        startPosition =
-            Floating.Position
-
-    end
-
-end)
-
-Floating.InputChanged:Connect(function(input)
-
-    if
-        input.UserInputType ==
-        Enum.UserInputType.MouseMovement
-        or
-        input.UserInputType ==
-        Enum.UserInputType.Touch
-    then
-
-        -- handled by global input
-
-    end
-
-end)
-
-UserInputService.InputChanged:Connect(
-    function(input)
+    UserInputService.InputChanged:Connect(function(input)
 
         if not dragging then
             return
         end
 
-        if
-            input.UserInputType ==
-            Enum.UserInputType.MouseMovement
-            or
-            input.UserInputType ==
-            Enum.UserInputType.Touch
-        then
+        if input.UserInputType == Enum.UserInputType.Touch
+        or input.UserInputType == Enum.UserInputType.MouseMovement then
 
-            local delta =
-                input.Position -
-                dragStart
+            local delta = input.Position - dragStart
 
-            Floating.Position =
-                UDim2.new(
-                    startPosition.X.Scale,
-                    startPosition.X.Offset +
-                        delta.X,
-                    startPosition.Y.Scale,
-                    startPosition.Y.Offset +
-                        delta.Y
-                )
+            Floating.Position = UDim2.new(
+                startPosition.X.Scale,
+                startPosition.X.Offset + delta.X,
+                startPosition.Y.Scale,
+                startPosition.Y.Offset + delta.Y
+            )
 
         end
 
-    end
-)
+    end)
 
-UserInputService.InputEnded:Connect(
-    function(input)
+    UserInputService.InputEnded:Connect(function(input)
 
-        if
-            input.UserInputType ==
-            Enum.UserInputType.MouseButton1
-            or
-            input.UserInputType ==
-            Enum.UserInputType.Touch
-        then
+        if input.UserInputType == Enum.UserInputType.Touch
+        or input.UserInputType == Enum.UserInputType.MouseButton1 then
 
             dragging = false
 
         end
 
+    end)
+
+end)
+
+--==================================================
+-- ANIMAÇÃO ECLIPSE
+--==================================================
+
+local function EclipseAnimation()
+
+    pcall(function()
+
+        local Eclipse = Instance.new("Frame")
+
+        Eclipse.Name = "MT7_Eclipse"
+        Eclipse.Size = UDim2.new(0, 0, 0, 0)
+        Eclipse.Position = UDim2.new(0.5, 0, 0.5, 0)
+        Eclipse.AnchorPoint = Vector2.new(0.5, 0.5)
+        Eclipse.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        Eclipse.BorderSizePixel = 0
+        Eclipse.ZIndex = 999
+        Eclipse.Parent = Gui
+
+        local Corner = Instance.new("UICorner")
+        Corner.CornerRadius = UDim.new(1, 0)
+        Corner.Parent = Eclipse
+
+        TweenObject(Eclipse, 0.45, {
+            Size = UDim2.new(2.2, 0, 2.2, 0)
+        })
+
+        task.wait(0.45)
+
+        Eclipse:Destroy()
+
+    end)
+
+end
+
+--==================================================
+-- FADE DE ENTRADA
+--==================================================
+
+local function FadeIn(object)
+
+    if not object then
+        return
     end
-)
+
+    pcall(function()
+
+        local oldTransparency = object.BackgroundTransparency
+
+        object.BackgroundTransparency = 1
+        object.Visible = true
+
+        TweenObject(object, 0.35, {
+            BackgroundTransparency = oldTransparency
+        })
+
+    end)
+
+end
 
 --==================================================
--- FLOATING BUTTON OPEN / CLOSE
+-- APLICAÇÃO DE FONTE EXTRA
 --==================================================
 
-local interfaceOpen = true
+pcall(function()
 
-Floating.MouseButton1Click:Connect(function()
+    if MT7Letters and MT7Letters.ApplyToGui then
 
-    interfaceOpen =
-        not interfaceOpen
+        task.delay(0.5, function()
 
-    if interfaceOpen then
+            pcall(function()
+                MT7Letters.ApplyToGui(Gui)
+            end)
 
-        Main.Visible = true
+        end)
 
-        TweenService:Create(
-            Main,
-            TweenInfo.new(0.2),
-            {
-                Size =
-                    UDim2.new(
-                        0.9,
-                        0,
-                        0,
-                        420
-                    )
-            }
-        ):Play()
+    end
 
-    else
+end)
 
-        TweenService:Create(
-            Main,
-            TweenInfo.new(0.2),
-            {
-                Size =
-                    UDim2.new(
-                        0.9,
-                        0,
-                        0,
-                        0
-                    )
-            }
-        ):Play()
+--==================================================
+-- MONITOR INICIAL
+--==================================================
 
-        task.delay(0.22, function()
+pcall(function()
 
-            if not interfaceOpen then
-                Main.Visible = false
+    if MT7Monitor and MT7Monitor.Start then
+        MT7Monitor.Start()
+    end
+
+end)
+
+--==================================================
+-- FPS BOOSTER INICIAL
+--==================================================
+
+pcall(function()
+
+    if MT7FPS and MT7FPS.Start then
+        MT7FPS.Start()
+    end
+
+end)
+
+--==================================================
+-- CONFIGURAÇÕES INICIAIS
+--==================================================
+
+pcall(function()
+
+    if MT7Settings and MT7Settings.Load then
+        MT7Settings.Load()
+    end
+
+end)
+
+--==================================================
+-- TEMA INICIAL
+--==================================================
+
+pcall(function()
+
+    if MT7Themes and MT7Themes.Set then
+        MT7Themes.Set("Eclipse")
+    end
+
+end)
+
+--==================================================
+-- STARTUP
+--==================================================
+
+Main.Visible = false
+Floating.Visible = false
+
+pcall(function()
+    KeyScreen.Visible = false
+end)
+
+--==================================================
+-- INTRO
+--==================================================
+
+task.spawn(function()
+
+    task.wait(0.15)
+
+    pcall(function()
+
+        if Intro then
+
+            Intro.Visible = true
+            Intro.BackgroundTransparency = 0
+
+            task.wait(0.25)
+
+            TweenObject(Intro, 0.45, {
+                BackgroundTransparency = 1
+            })
+
+            task.wait(0.50)
+
+            Intro.Visible = false
+
+        end
+
+    end)
+
+    --==================================================
+    -- TELA KEY
+    --==================================================
+
+    task.wait(0.15)
+
+    pcall(function()
+
+        if not Unlocked then
+
+            KeyScreen.Visible = true
+            Main.Visible = false
+            Floating.Visible = false
+
+        else
+
+            KeyScreen.Visible = false
+            Main.Visible = true
+            Floating.Visible = true
+
+        end
+
+    end)
+
+end)
+
+--==================================================
+-- PROTEÇÃO DE ERROS
+--==================================================
+
+task.spawn(function()
+
+    while task.wait(2) do
+
+        pcall(function()
+
+            if Gui and Gui.Parent == nil then
+                Gui.Parent = PlayerGui
+            end
+
+            if Floating and Floating.Parent == nil then
+                Floating.Parent = Gui
             end
 
         end)
@@ -1624,96 +1163,22 @@ Floating.MouseButton1Click:Connect(function()
 end)
 
 --==================================================
--- CLOSE INTERFACE
---==================================================
-
-local CloseButton =
-    Button(
-        Home,
-        "✕  Fechar Interface"
-    )
-
-CloseButton.MouseButton1Click:Connect(
-    function()
-
-        interfaceOpen = false
-
-        Main.Visible = false
-
-    end
-)
-
---==================================================
--- INTRO
---==================================================
-
-Main.Visible = false
-KeyScreen.Visible = false
-Floating.Visible = false
-
-task.spawn(function()
-
-    IntroTitle.TextTransparency = 1
-
-    TweenService:Create(
-        IntroTitle,
-        TweenInfo.new(
-            0.8,
-            Enum.EasingStyle.Quad,
-            Enum.EasingDirection.Out
-        ),
-        {
-            TextTransparency = 0
-        }
-    ):Play()
-
-    task.wait(1.4)
-
-    TweenService:Create(
-        IntroTitle,
-        TweenInfo.new(0.6),
-        {
-            TextTransparency = 1
-        }
-    ):Play()
-
-    task.wait(0.65)
-
-    Intro.Visible = false
-
-    -- FREE MODE primeiro
-    Main.Visible = true
-    Floating.Visible = true
-
-    ShowPage("Home")
-
-end)
-
---==================================================
--- DEFAULTS
---==================================================
-
-ApplyTheme("Eclipse")
-
-UpdateFPSButton()
-
-ShowPage("Home")
-
---==================================================
--- STATUS
+-- FINAL
 --==================================================
 
 print("==============================================")
-print("🌙 MT7 HUB V4")
-print("🖥️ Interface: READY")
-print("🔐 Key System: READY")
-print("🔄 FREE / KEY: READY")
-print("📊 Monitor: READY")
-print("🚀 FPS Booster: READY")
-print("🎭 Animations: READY")
-print("🎨 Themes: READY")
-print("📱 Mobile: READY")
-print("⚪ Floating Button: READY")
+print("🌙 MT7 HUB V4.1")
+print("🖥️ Interface Compacta: READY")
+print("🔐 KEY SYSTEM: READY")
+print("🆓 FREE MODE: READY")
+print("🔑 KEY MODE: READY")
+print("🎨 TEMAS: READY")
+print("🔤 FONTES: READY")
+print("📊 MONITOR: READY")
+print("🚀 FPS BOOSTER: READY")
+print("📱 MOBILE: READY")
+print("🎭 ANIMAÇÕES: READY")
+print("⚪ FLOATING BUTTON: READY")
 print("==============================================")
-
-return Gui
+print("🔥 MT7 HUB V4.1 CARREGADO")
+print("==============================================")

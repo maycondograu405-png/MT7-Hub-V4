@@ -749,101 +749,111 @@ FreezeButton.Size = UDim2.new(1, -40, 0, 45)
 -- 🔘 ESTADOS
 --==================================================
 
+--==================================================
+-- ⚙️ ESTADOS DOS SISTEMAS
+--==================================================
+
 local FPSEnabled = false
 local PingEnabled = false
 local BoosterEnabled = false
 local FreezeEnabled = false
 
-
 --==================================================
--- 📊 FPS ON / OFF
+-- 📊 FPS MONITOR
 --==================================================
 
 FPSButton.MouseButton1Click:Connect(function()
-
     FPSEnabled = not FPSEnabled
 
-    if FPSEnabled then
+    pcall(function()
+        if FPSEnabled then
+            MT7Monitor.Create(Main)
+            MT7Monitor.Start()
+            MT7Monitor.SetVisible(true)
 
-        FPSButton.Text = "🟢  FPS MONITOR: ON"
-        FPSButton.BackgroundColor3 = C.Green
+            FPSButton.Text = "🟢  FPS MONITOR  ON"
+            FPSButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
+        else
+            MT7Monitor.SetVisible(false)
+            MT7Monitor.Stop()
 
-    else
-
-        FPSButton.Text = "🔴  FPS MONITOR: OFF"
-        FPSButton.BackgroundColor3 = C.Background
-
-    end
-
+            FPSButton.Text = "🔴  FPS MONITOR  OFF"
+            FPSButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
+        end
+    end)
 end)
 
-
 --==================================================
--- 📡 PING ON / OFF
+-- 📡 PING MONITOR
 --==================================================
 
 PingButton.MouseButton1Click:Connect(function()
-
     PingEnabled = not PingEnabled
 
-    if PingEnabled then
+    pcall(function()
+        if PingEnabled then
+            MT7Monitor.Create(Main)
+            MT7Monitor.Start()
+            MT7Monitor.SetVisible(true)
 
-        PingButton.Text = "🟢  PING MONITOR: ON"
-        PingButton.BackgroundColor3 = C.Green
+            PingButton.Text = "🟢  PING MONITOR  ON"
+            PingButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
+        else
+            if not FPSEnabled then
+                MT7Monitor.SetVisible(false)
+                MT7Monitor.Stop()
+            end
 
-    else
-
-        PingButton.Text = "🔴  PING MONITOR: OFF"
-        PingButton.BackgroundColor3 = C.Background
-
-    end
-
+            PingButton.Text = "🔴  PING MONITOR  OFF"
+            PingButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
+        end
+    end)
 end)
 
-
 --==================================================
--- 🚀 BOOSTER ON / OFF
+-- 🚀 BOOSTER
 --==================================================
 
 BoosterButton.MouseButton1Click:Connect(function()
-
     BoosterEnabled = not BoosterEnabled
 
-    if BoosterEnabled then
+    pcall(function()
+        if BoosterEnabled then
+            MT7FPS.QuickBoost()
 
-        BoosterButton.Text = "🟢  FPS BOOSTER: ON"
-        BoosterButton.BackgroundColor3 = C.Green
+            BoosterButton.Text = "🟢  FPS BOOSTER  ON"
+            BoosterButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
+        else
+            MT7FPS.Disable()
+            MT7FPS.Restore()
 
-    else
-
-        BoosterButton.Text = "🔴  FPS BOOSTER: OFF"
-        BoosterButton.BackgroundColor3 = C.Background
-
-    end
-
+            BoosterButton.Text = "🔴  FPS BOOSTER  OFF"
+            BoosterButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
+        end
+    end)
 end)
 
-
 --==================================================
--- 🧊 ANTI-FREEZE ON / OFF
+-- 🧊 ANTI-FREEZE
 --==================================================
 
 FreezeButton.MouseButton1Click:Connect(function()
-
     FreezeEnabled = not FreezeEnabled
 
-    if FreezeEnabled then
+    pcall(function()
+        if FreezeEnabled then
+            MT7FPS.SetAdaptive(true)
 
-        FreezeButton.Text = "🟢  ANTI-FREEZE: ON"
-        FreezeButton.BackgroundColor3 = C.Green
+            FreezeButton.Text = "🟢  ANTI-FREEZE  ON"
+            FreezeButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
+        else
+            MT7FPS.SetAdaptive(false)
+            MT7FPS.Restore()
 
-    else
-
-        FreezeButton.Text = "🔴  ANTI-FREEZE: OFF"
-        FreezeButton.BackgroundColor3 = C.Background
-
-    end
-
+            FreezeButton.Text = "🔴  ANTI-FREEZE  OFF"
+            FreezeButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
+        end
+    end)
 end)
 
 --==================================================

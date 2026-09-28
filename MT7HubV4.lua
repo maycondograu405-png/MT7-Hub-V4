@@ -210,7 +210,7 @@ IntroTitle.Parent = Intro
 
 local KeyScreen = Instance.new("Frame")
 KeyScreen.Size = UDim2.new(1, 0, 1, 0)
-KeyScreen.BackgroundColor3 = C.Black
+KeyScreen.BackgroundTransparency = 1
 KeyScreen.BorderSizePixel = 0
 KeyScreen.Visible = false
 KeyScreen.ZIndex = 90
@@ -522,6 +522,70 @@ local ModeStatus = Label(
 ModeStatus.Position = UDim2.new(0, 12, 0, 56)
 ModeStatus.Size = UDim2.new(0.5, 0, 0, 18)
 ModeStatus.TextColor3 = C.SubText
+
+--==================================================
+-- 🔐 SISTEMA KEY / FREE
+--==================================================
+
+FreeButton.MouseButton1Click:Connect(function()
+
+    Unlocked = true
+    CurrentMode = "FREE"
+
+    KeyStatus.Text = "Modo FREE ativado!"
+    KeyStatus.TextColor3 = C.SubText
+
+    ModeStatus.Text = "Modo: FREE"
+    ModeButton.Text = "FREE"
+
+    KeyScreen.Visible = false
+    Main.Visible = true
+    Floating.Visible = true
+
+    ShowPage("Home")
+
+end)
+
+
+UnlockButton.MouseButton1Click:Connect(function()
+
+    local enteredKey = tostring(KeyInput.Text or "")
+
+    if enteredKey == "" then
+
+        KeyStatus.Text = "Digite uma key!"
+        KeyStatus.TextColor3 = C.Red
+        return
+
+    end
+
+    if enteredKey == VALID_KEY then
+
+        Unlocked = true
+        CurrentMode = "KEY"
+
+        KeyStatus.Text = "Key desbloqueada!"
+        KeyStatus.TextColor3 = C.Green
+
+        ModeStatus.Text = "Modo: KEY"
+        ModeButton.Text = "KEY"
+
+        task.wait(0.35)
+
+        KeyScreen.Visible = false
+        Main.Visible = true
+        Floating.Visible = true
+
+        ShowPage("Home")
+
+    else
+
+        KeyStatus.Text = "Key inválida!"
+        KeyStatus.TextColor3 = C.Red
+
+    end
+
+end)
 
 --==================================================
 -- HOME BOTÕES

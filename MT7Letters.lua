@@ -15,7 +15,13 @@ local Fonts = {
     Gotham = Enum.Font.Gotham,
     GothamBold = Enum.Font.GothamBold,
     SourceSans = Enum.Font.SourceSans,
-    SourceSansBold = Enum.Font.SourceSansBold
+    SourceSansBold = Enum.Font.SourceSansBold,
+
+    -- 🔤 FONTES EXTRAS
+    Code = Enum.Font.Code,
+    Cartoon = Enum.Font.Cartoon,
+    SciFi = Enum.Font.SciFi,
+    Fantasy = Enum.Font.Fantasy
 }
 
 MT7Letters.Fonts = Fonts
@@ -295,8 +301,11 @@ MT7Letters.AvailableFonts = {
     "Gotham",
     "GothamBold",
     "SourceSans",
-    "Arial",
-    "Code"
+    "SourceSansBold",
+    "Code",
+    "Cartoon",
+    "SciFi",
+    "Fantasy"
 }
 
 --========================================================--

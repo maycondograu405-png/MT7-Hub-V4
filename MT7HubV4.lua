@@ -1184,30 +1184,27 @@ task.spawn(function()
     FadeOut.Completed:Wait()
 
     StartupIntro:Destroy()
+--==================================================
+-- 🔐 FINAL DA ANIMAÇÃO → TELA KEY
+--==================================================
+
+task.wait(0.25)
+
+if not Unlocked then
+
+    KeyScreen.Visible = true
+    Main.Visible = false
+    Floating.Visible = false
+
+else
+
+    KeyScreen.Visible = false
+    Main.Visible = true
+    Floating.Visible = true
+
+end
+
 end)
-    --==================================================
-    -- TELA KEY
-    --==================================================
-
-    task.wait(2.8)
-
-    pcall(function()
-
-        if not Unlocked then
-
-            KeyScreen.Visible = true
-            Main.Visible = false
-            Floating.Visible = false
-
-        else
-
-            KeyScreen.Visible = false
-            Main.Visible = true
-            Floating.Visible = true
-
-        end
-
-    end)
 
 
 --==================================================

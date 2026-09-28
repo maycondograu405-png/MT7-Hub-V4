@@ -190,6 +190,7 @@ Intro.BackgroundColor3 = C.Black
 Intro.BorderSizePixel = 0
 Intro.ZIndex = 100
 Intro.Parent = Gui
+Intro.Visible = false
 
 local IntroTitle = Instance.new("TextLabel")
 IntroTitle.AnchorPoint = Vector2.new(0.5, 0.5)

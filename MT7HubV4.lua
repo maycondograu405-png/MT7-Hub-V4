@@ -465,7 +465,7 @@ ThemeScroll.BorderSizePixel = 0
 
 ThemeScroll.ScrollBarThickness = 3
 ThemeScroll.ScrollingDirection = Enum.ScrollingDirection.Y
-ThemeScroll.CanvasSize = UDim2.new(0, 0, 0, 320)
+ThemeScroll.CanvasSize = UDim2.new(0, 0, 0, 700)
 
 ThemeScroll.Parent = ThemePage
 

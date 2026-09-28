@@ -221,23 +221,25 @@ KeyBox.Position = UDim2.new(0.5, 0, 0.5, 0)
 KeyBox.Size = UDim2.new(0.84, 0, 0, 280)
 KeyBox.BackgroundColor3 = C.Background
 KeyBox.BorderSizePixel = 0
+KeyBox.ZIndex = 91
 KeyBox.Parent = KeyScreen
-
 Corner(KeyBox, 16)
 Stroke(KeyBox, C.Purple, 2)
 
 local KeyTitle = Label(KeyBox, "🔐 MT7 HUB", 25)
+KeyTitle.ZIndex = 92
 KeyTitle.Position = UDim2.new(0, 22, 0, 22)
 KeyTitle.Size = UDim2.new(1, -44, 0, 35)
 KeyTitle.TextXAlignment = Enum.TextXAlignment.Center
 KeyTitle.Font = Enum.Font.GothamBold
 
-local KeySub = Label(
+local KeySub = Label(   
     KeyBox,
     "Digite sua KEY ou entre no modo FREE",
     12
 )
 
+KeySub.ZIndex = 92
 KeySub.Position = UDim2.new(0, 20, 0, 62)
 KeySub.Size = UDim2.new(1, -40, 0, 25)
 KeySub.TextXAlignment = Enum.TextXAlignment.Center
@@ -256,6 +258,7 @@ KeyInput.Font = Enum.Font.Gotham
 KeyInput.ClearTextOnFocus = false
 KeyInput.BorderSizePixel = 0
 KeyInput.Parent = KeyBox
+KeyInput.ZIndex = 92
 
 Corner(KeyInput, 9)
 Stroke(KeyInput, C.Purple, 1)
@@ -265,6 +268,7 @@ local UnlockButton = Button(
     "🔓  DESBLOQUEAR KEY"
 )
 
+UnlockButton.ZIndex = 92
 UnlockButton.Position = UDim2.new(0.08, 0, 0, 154)
 UnlockButton.Size = UDim2.new(0.84, 0, 0, 42)
 
@@ -273,10 +277,12 @@ local FreeButton = Button(
     "🆓  ENTRAR NO MODO FREE"
 )
 
+FreeButton.ZIndex = 92
 FreeButton.Position = UDim2.new(0.08, 0, 0, 204)
 FreeButton.Size = UDim2.new(0.84, 0, 0, 42)
 
 local KeyStatus = Label(KeyBox, "", 11)
+KeyStatus.ZIndex = 92.
 KeyStatus.Position = UDim2.new(0.08, 0, 0, 250)
 KeyStatus.Size = UDim2.new(0.84, 0, 0, 20)
 KeyStatus.TextXAlignment = Enum.TextXAlignment.Center

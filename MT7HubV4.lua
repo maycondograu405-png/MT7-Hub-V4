@@ -1084,39 +1084,112 @@ pcall(function()
 end)
 
 --==================================================
--- INTRO
+--==================================================
+-- 🌑 MT7 HUB - ANIMAÇÃO DE ABERTURA
 --==================================================
 
+local StartupIntro = Instance.new("Frame")
+StartupIntro.Name = "MT7StartupIntro"
+StartupIntro.Size = UDim2.fromScale(1, 1)
+StartupIntro.Position = UDim2.fromScale(0, 0)
+StartupIntro.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+StartupIntro.BackgroundTransparency = 0
+StartupIntro.BorderSizePixel = 0
+StartupIntro.ZIndex = 9999
+StartupIntro.Parent = Gui
+
+local StartupTitle = Instance.new("TextLabel")
+StartupTitle.Name = "MT7Title"
+StartupTitle.AnchorPoint = Vector2.new(0.5, 0.5)
+StartupTitle.Position = UDim2.fromScale(0.5, 0.5)
+StartupTitle.Size = UDim2.new(0.9, 0, 0, 80)
+StartupTitle.BackgroundTransparency = 1
+StartupTitle.Text = "MT7 HUB"
+StartupTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+StartupTitle.TextTransparency = 1
+StartupTitle.Font = Enum.Font.GothamBlack
+StartupTitle.TextSize = 48
+StartupTitle.ZIndex = 10000
+StartupTitle.Parent = StartupIntro
+
+local Eclipse = Instance.new("Frame")
+Eclipse.Name = "Eclipse"
+Eclipse.AnchorPoint = Vector2.new(0.5, 0.5)
+Eclipse.Position = UDim2.fromScale(0.5, 0.5)
+Eclipse.Size = UDim2.fromOffset(20, 20)
+Eclipse.BackgroundColor3 = Color3.fromRGB(90, 40, 180)
+Eclipse.BackgroundTransparency = 0.25
+Eclipse.BorderSizePixel = 0
+Eclipse.ZIndex = 9998
+Eclipse.Parent = StartupIntro
+
+local EclipseCorner = Instance.new("UICorner")
+EclipseCorner.CornerRadius = UDim.new(1, 0)
+EclipseCorner.Parent = Eclipse
+
 task.spawn(function()
+    task.wait(0.25)
 
-    task.wait(0.15)
+    -- ✨ MT7 HUB aparece
+    local TitleIn = TweenService:Create(
+        StartupTitle,
+        TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {
+            TextTransparency = 0,
+            TextSize = 52
+        }
+    )
 
-    pcall(function()
+    TitleIn:Play()
+    TitleIn.Completed:Wait()
 
-        if Intro then
+    task.wait(0.8)
 
-            Intro.Visible = true
-            Intro.BackgroundTransparency = 0
+    -- 🌑 Eclipse cresce
+    local EclipseTween = TweenService:Create(
+        Eclipse,
+        TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
+        {
+            Size = UDim2.fromOffset(650, 650),
+            BackgroundTransparency = 0.55
+        }
+    )
 
-            task.wait(0.25)
+    EclipseTween:Play()
 
-            TweenObject(Intro, 0.45, {
-                BackgroundTransparency = 1
-            })
+    -- ✨ Texto desaparece
+    TweenService:Create(
+        StartupTitle,
+        TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+        {
+            TextTransparency = 1,
+            TextSize = 64
+        }
+    ):Play()
 
-            task.wait(0.50)
+    EclipseTween.Completed:Wait()
 
-            Intro.Visible = false
+    task.wait(0.25)
 
-        end
+    -- 🌌 Tela desaparece
+    local FadeOut = TweenService:Create(
+        StartupIntro,
+        TweenInfo.new(0.65, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {
+            BackgroundTransparency = 1
+        }
+    )
 
-    end)
+    FadeOut:Play()
+    FadeOut.Completed:Wait()
 
+    StartupIntro:Destroy()
+end)
     --==================================================
     -- TELA KEY
     --==================================================
 
-    task.wait(0.15)
+    task.wait(2.8)
 
     pcall(function()
 

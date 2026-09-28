@@ -625,24 +625,35 @@ end)
 -- 🌈 AÇÕES DOS TEMAS
 --==================================================
 
+local function ApplyTheme(themeName)
+    pcall(function()
+        MT7Themes.Set(themeName)
+        MT7Themes.ApplyToGui(Gui, themeName)
+        MT7Themes.ApplyAccent(Gui, themeName)
+        MT7Themes.ApplyLighting(themeName)
+
+        CurrentTheme = themeName
+    end)
+end
+
 EclipseThemeButton.MouseButton1Click:Connect(function()
-MT7Themes.Set("Eclipse")
+    ApplyTheme("Eclipse")
 end)
 
 PurpleThemeButton.MouseButton1Click:Connect(function()
-MT7Themes.Set("Purple")
+    ApplyTheme("Purple")
 end)
 
 BlueThemeButton.MouseButton1Click:Connect(function()
-MT7Themes.Set("Blue")
+    ApplyTheme("Blue")
 end)
 
 BlackThemeButton.MouseButton1Click:Connect(function()
-MT7Themes.Set("Black")
+    ApplyTheme("Black")
 end)
 
 MoonThemeButton.MouseButton1Click:Connect(function()
-MT7Themes.Set("Moon")
+    ApplyTheme("Moon")
 end)
 
 --==================================================

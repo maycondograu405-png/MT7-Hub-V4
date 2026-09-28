@@ -431,9 +431,9 @@ local KeyPage = CreatePage("KeyPage")
 --==================================================
 
 local ThemeTitle = Label(
-    ThemePage,
-    "🎨 PERSONALIZAR",
-    18
+ThemePage,
+"🎨 PERSONALIZAR",
+18
 )
 
 ThemeTitle.Position = UDim2.new(0, 20, 0, 15)
@@ -441,53 +441,92 @@ ThemeTitle.Size = UDim2.new(1, -40, 0, 35)
 ThemeTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 local ThemeInfo = Label(
-    ThemePage,
-    "Escolha o tema do MT7 HUB",
-    11
+ThemePage,
+"Escolha o tema do MT7 HUB",
+11
 )
 
 ThemeInfo.Position = UDim2.new(0, 20, 0, 52)
 ThemeInfo.Size = UDim2.new(1, -40, 0, 25)
 ThemeInfo.TextXAlignment = Enum.TextXAlignment.Left
 
+--==================================================
+-- 📜 ÁREA DE ROLAGEM
+--==================================================
+
+local ThemeScroll = Instance.new("ScrollingFrame")
+
+ThemeScroll.Name = "ThemeScroll"
+ThemeScroll.Position = UDim2.new(0, 0, 0, 80)
+ThemeScroll.Size = UDim2.new(1, 0, 1, -80)
+
+ThemeScroll.BackgroundTransparency = 1
+ThemeScroll.BorderSizePixel = 0
+
+ThemeScroll.ScrollBarThickness = 3
+ThemeScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+ThemeScroll.CanvasSize = UDim2.new(0, 0, 0, 320)
+
+ThemeScroll.Parent = ThemePage
+
+--==================================================
+-- 🌑 ECLIPSE
+--==================================================
+
 local EclipseThemeButton = Button(
-    ThemePage,
-    "🌑  ECLIPSE"
+ThemeScroll,
+"🌑  ECLIPSE"
 )
 
-EclipseThemeButton.Position = UDim2.new(0, 20, 0, 95)
+EclipseThemeButton.Position = UDim2.new(0, 20, 0, 15)
 EclipseThemeButton.Size = UDim2.new(1, -40, 0, 45)
 
+--==================================================
+-- 🟣 PURPLE
+--==================================================
+
 local PurpleThemeButton = Button(
-    ThemePage,
-    "🟣  PURPLE"
+ThemeScroll,
+"🟣  PURPLE"
 )
 
-PurpleThemeButton.Position = UDim2.new(0, 20, 0, 150)
+PurpleThemeButton.Position = UDim2.new(0, 20, 0, 70)
 PurpleThemeButton.Size = UDim2.new(1, -40, 0, 45)
 
+--==================================================
+-- 🔵 BLUE
+--==================================================
+
 local BlueThemeButton = Button(
-    ThemePage,
-    "🔵  BLUE"
+ThemeScroll,
+"🔵  BLUE"
 )
 
-BlueThemeButton.Position = UDim2.new(0, 20, 0, 205)
+BlueThemeButton.Position = UDim2.new(0, 20, 0, 125)
 BlueThemeButton.Size = UDim2.new(1, -40, 0, 45)
 
+--==================================================
+-- ⚫ BLACK
+--==================================================
+
 local BlackThemeButton = Button(
-    ThemePage,
-    "⚫  BLACK"
+ThemeScroll,
+"⚫  BLACK"
 )
 
-BlackThemeButton.Position = UDim2.new(0, 20, 0, 260)
+BlackThemeButton.Position = UDim2.new(0, 20, 0, 180)
 BlackThemeButton.Size = UDim2.new(1, -40, 0, 45)
 
+--==================================================
+-- 🌙 MOON
+--==================================================
+
 local MoonThemeButton = Button(
-    ThemePage,
-    "🌙  MOON"
+ThemeScroll,
+"🌙  MOON"
 )
 
-MoonThemeButton.Position = UDim2.new(0, 20, 0, 315)
+MoonThemeButton.Position = UDim2.new(0, 20, 0, 235)
 MoonThemeButton.Size = UDim2.new(1, -40, 0, 45)
 
 --==================================================
@@ -495,24 +534,25 @@ MoonThemeButton.Size = UDim2.new(1, -40, 0, 45)
 --==================================================
 
 EclipseThemeButton.MouseButton1Click:Connect(function()
-    MT7Themes.Set("Eclipse")
+MT7Themes.Set("Eclipse")
 end)
 
 PurpleThemeButton.MouseButton1Click:Connect(function()
-    MT7Themes.Set("Purple")
+MT7Themes.Set("Purple")
 end)
 
 BlueThemeButton.MouseButton1Click:Connect(function()
-    MT7Themes.Set("Blue")
+MT7Themes.Set("Blue")
 end)
 
 BlackThemeButton.MouseButton1Click:Connect(function()
-    MT7Themes.Set("Black")
+MT7Themes.Set("Black")
 end)
 
 MoonThemeButton.MouseButton1Click:Connect(function()
-    MT7Themes.Set("Moon")
+MT7Themes.Set("Moon")
 end)
+
 --==================================================
 
 --==================================================
@@ -548,8 +588,8 @@ SettingsInfo.TextXAlignment = Enum.TextXAlignment.Left
 local SettingsScroll = Instance.new("ScrollingFrame")
 
 SettingsScroll.Name = "SettingsScroll"
-SettingsScroll.Position = UDim2.new(0, 0, 0, 0)
-SettingsScroll.Size = UDim2.new(1, 0, 1, 0)
+SettingsScroll.Position = UDim2.new(0, 0, 0, 80)
+SettingsScroll.Size = UDim2.new(1, 0, 1, -80)
 
 SettingsScroll.BackgroundTransparency = 1
 SettingsScroll.BorderSizePixel = 0

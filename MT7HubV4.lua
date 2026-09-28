@@ -601,39 +601,206 @@ PingButton.MouseButton1Click:Connect(function()
 
     PingEnabled = not PingEnabled
 
-    if PingEnabled then
-        PingButton.Text = "📡  PING MONITOR: ON"
+--==================================================
+-- ⚙️ CONFIGURAÇÕES
+--==================================================
+
+local SettingsTitle = Label(
+    SettingsPage,
+    "⚙️ CONFIGURAÇÕES",
+    18
+)
+
+SettingsTitle.Position = UDim2.new(0, 20, 0, 15)
+SettingsTitle.Size = UDim2.new(1, -40, 0, 35)
+SettingsTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+
+local SettingsInfo = Label(
+    SettingsPage,
+    "Controles de desempenho do MT7 HUB",
+    11
+)
+
+SettingsInfo.Position = UDim2.new(0, 20, 0, 52)
+SettingsInfo.Size = UDim2.new(1, -40, 0, 25)
+SettingsInfo.TextXAlignment = Enum.TextXAlignment.Left
+
+
+--==================================================
+-- 📜 ÁREA DE ROLAGEM
+--==================================================
+
+local SettingsScroll = Instance.new("ScrollingFrame")
+
+SettingsScroll.Name = "SettingsScroll"
+SettingsScroll.Position = UDim2.new(0, 0, 0, 0)
+SettingsScroll.Size = UDim2.new(1, 0, 1, 0)
+
+SettingsScroll.BackgroundTransparency = 1
+SettingsScroll.BorderSizePixel = 0
+
+SettingsScroll.ScrollBarThickness = 3
+SettingsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, 390)
+
+SettingsScroll.Parent = SettingsPage
+
+
+--==================================================
+-- 📊 FPS
+--==================================================
+
+local FPSButton = Button(
+    SettingsScroll,
+    "📊  FPS MONITOR: OFF"
+)
+
+FPSButton.Position = UDim2.new(0, 20, 0, 95)
+FPSButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+--==================================================
+-- 📡 PING
+--==================================================
+
+local PingButton = Button(
+    SettingsScroll,
+    "📡  PING MONITOR: OFF"
+)
+
+PingButton.Position = UDim2.new(0, 20, 0, 150)
+PingButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+--==================================================
+-- 🚀 FPS BOOSTER
+--==================================================
+
+local BoosterButton = Button(
+    SettingsScroll,
+    "🚀  FPS BOOSTER: OFF"
+)
+
+BoosterButton.Position = UDim2.new(0, 20, 0, 205)
+BoosterButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+--==================================================
+-- 🧊 ANTI-FREEZE
+--==================================================
+
+local FreezeButton = Button(
+    SettingsScroll,
+    "🧊  ANTI-FREEZE: OFF"
+)
+
+FreezeButton.Position = UDim2.new(0, 20, 0, 260)
+FreezeButton.Size = UDim2.new(1, -40, 0, 45)
+
+
+--==================================================
+-- 🔘 ESTADOS
+--==================================================
+
+local FPSEnabled = false
+local PingEnabled = false
+local BoosterEnabled = false
+local FreezeEnabled = false
+
+
+--==================================================
+-- 📊 FPS ON / OFF
+--==================================================
+
+FPSButton.MouseButton1Click:Connect(function()
+
+    FPSEnabled = not FPSEnabled
+
+    if FPSEnabled then
+
+        FPSButton.Text = "🟢  FPS MONITOR: ON"
+        FPSButton.BackgroundColor3 = C.Green
+
     else
-        PingButton.Text = "📡  PING MONITOR: OFF"
+
+        FPSButton.Text = "🔴  FPS MONITOR: OFF"
+        FPSButton.BackgroundColor3 = C.Background
+
     end
 
 end)
 
+
+--==================================================
+-- 📡 PING ON / OFF
+--==================================================
+
+PingButton.MouseButton1Click:Connect(function()
+
+    PingEnabled = not PingEnabled
+
+    if PingEnabled then
+
+        PingButton.Text = "🟢  PING MONITOR: ON"
+        PingButton.BackgroundColor3 = C.Green
+
+    else
+
+        PingButton.Text = "🔴  PING MONITOR: OFF"
+        PingButton.BackgroundColor3 = C.Background
+
+    end
+
+end)
+
+
+--==================================================
+-- 🚀 BOOSTER ON / OFF
+--==================================================
 
 BoosterButton.MouseButton1Click:Connect(function()
 
     BoosterEnabled = not BoosterEnabled
 
     if BoosterEnabled then
-        BoosterButton.Text = "🚀  FPS BOOSTER: ON"
+
+        BoosterButton.Text = "🟢  FPS BOOSTER: ON"
+        BoosterButton.BackgroundColor3 = C.Green
+
     else
-        BoosterButton.Text = "🚀  FPS BOOSTER: OFF"
+
+        BoosterButton.Text = "🔴  FPS BOOSTER: OFF"
+        BoosterButton.BackgroundColor3 = C.Background
+
     end
 
 end)
 
+
+--==================================================
+-- 🧊 ANTI-FREEZE ON / OFF
+--==================================================
 
 FreezeButton.MouseButton1Click:Connect(function()
 
     FreezeEnabled = not FreezeEnabled
 
     if FreezeEnabled then
-        FreezeButton.Text = "🧊  ANTI-FREEZE: ON"
+
+        FreezeButton.Text = "🟢  ANTI-FREEZE: ON"
+        FreezeButton.BackgroundColor3 = C.Green
+
     else
-        FreezeButton.Text = "🧊  ANTI-FREEZE: OFF"
+
+        FreezeButton.Text = "🔴  ANTI-FREEZE: OFF"
+        FreezeButton.BackgroundColor3 = C.Background
+
     end
 
 end)
+
+--==================================================
 
 --==================================================
 --==================================================

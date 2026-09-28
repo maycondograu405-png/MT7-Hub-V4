@@ -282,7 +282,7 @@ FreeButton.Position = UDim2.new(0.08, 0, 0, 204)
 FreeButton.Size = UDim2.new(0.84, 0, 0, 42)
 
 local KeyStatus = Label(KeyBox, "", 11)
-KeyStatus.ZIndex = 92.
+KeyStatus.ZIndex = 92
 KeyStatus.Position = UDim2.new(0.08, 0, 0, 250)
 KeyStatus.Size = UDim2.new(0.84, 0, 0, 20)
 KeyStatus.TextXAlignment = Enum.TextXAlignment.Center

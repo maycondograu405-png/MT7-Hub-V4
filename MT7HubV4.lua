@@ -1000,6 +1000,58 @@ FPSBoosterPROButton.MouseButton1Click:Connect(function()
 end)
 
 --==================================================
+-- 🚀 SUPER OTIMIZAÇÃO
+--==================================================
+
+local SuperOptimizationButton = Button(
+    SettingsScroll,
+    "🔴  SUPER OTIMIZAÇÃO: OFF"
+)
+
+SuperOptimizationButton.Position =
+    UDim2.new(0, 20, 0, 580)
+
+SuperOptimizationButton.Size =
+    UDim2.new(1, -40, 0, 45)
+
+local SuperOptimizationEnabledUI = false
+
+SuperOptimizationButton.MouseButton1Click:Connect(function()
+
+    SuperOptimizationEnabledUI =
+        not SuperOptimizationEnabledUI
+
+    if SuperOptimizationEnabledUI then
+
+        -- ATIVAR SUPER OTIMIZAÇÃO
+        pcall(function()
+            MT7FPS.EnableSuperOptimization()
+        end)
+
+        SuperOptimizationButton.Text =
+            "🟢  SUPER OTIMIZAÇÃO: ON"
+
+        SuperOptimizationButton.BackgroundColor3 =
+            Color3.fromRGB(35, 120, 70)
+
+    else
+
+        -- DESATIVAR SUPER OTIMIZAÇÃO
+        pcall(function()
+            MT7FPS.DisableSuperOptimization()
+        end)
+
+        SuperOptimizationButton.Text =
+            "🔴  SUPER OTIMIZAÇÃO: OFF"
+
+        SuperOptimizationButton.BackgroundColor3 =
+            Color3.fromRGB(80, 35, 45)
+
+    end
+
+end)
+
+--==================================================
 -- 🔘 ESTADOS
 --==================================================
 

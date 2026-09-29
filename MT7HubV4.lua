@@ -1502,7 +1502,6 @@ ModeStatus.TextColor3 = C.SubText
 
 FreeButton.MouseButton1Click:Connect(function()
 
-    Unlocked = true
     CurrentMode = "FREE"
 
     KeyStatus.Text = "Modo FREE ativado!"

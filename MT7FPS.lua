@@ -18,6 +18,36 @@ local Workspace = game:GetService("Workspace")
 local connections = {}
 local saved = {}
 
+--========================================================--
+--                 ANTI-FREEZE LEVE                      --
+--========================================================--
+
+local FreezeProtectionEnabled = false
+local FreezeTimer = 0
+
+local function EnableFreezeProtection()
+    FreezeProtectionEnabled = true
+    FreezeTimer = 0
+end
+
+local function DisableFreezeProtection()
+    FreezeProtectionEnabled = false
+    FreezeTimer = 0
+end
+
+function MT7FPS.EnableFreezeProtection()
+    EnableFreezeProtection()
+    return true
+end
+
+function MT7FPS.DisableFreezeProtection()
+    DisableFreezeProtection()
+end
+
+function MT7FPS.IsFreezeProtectionEnabled()
+    return FreezeProtectionEnabled
+end
+
 local function remember(object, property)
     if not object then
         return
@@ -367,30 +397,34 @@ end
 --                  FRAME PROTECTION                    --
 --========================================================--
 
-local protectionTimer = 0
+--========================================================--
+--                 ANTI-FREEZE LEVE                      --
+--========================================================--
 
-connections.Heartbeat = RunService.Heartbeat:Connect(function(dt)
-    if not MT7FPS.Enabled then
+connections.FreezeProtection = RunService.Heartbeat:Connect(function(dt)
+    if not FreezeProtectionEnabled then
         return
     end
 
-    protectionTimer += dt
+    FreezeTimer += dt
 
-    -- Anti-Freeze leve:
-    -- verifica somente a cada 5 segundos.
-    if protectionTimer < 5 then
+    -- Verificação bem espaçada para não criar carga constante.
+    if FreezeTimer < 5 then
         return
     end
 
-    protectionTimer = 0
+    FreezeTimer = 0
 
-    -- Só aplica uma otimização leve quando o FPS
-    -- estiver realmente baixo.
-    if currentFPS > 0 and currentFPS < 35 then
-        if MT7FPS.Level < 1 then
-            MT7FPS.Level = 1
-            optimizeWorld(1)
-        end
+    -- Apenas proteção leve.
+    -- NÃO ativa Adaptive.
+    -- NÃO executa optimizeWorld().
+    -- NÃO percorre Workspace:GetDescendants().
+    if currentFPS > 0 and currentFPS < 25 then
+        pcall(function()
+            if Lighting.GlobalShadows then
+                setProperty(Lighting, "GlobalShadows", false)
+            end
+        end)
     end
 end)
 

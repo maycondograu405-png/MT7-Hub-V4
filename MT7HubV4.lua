@@ -807,15 +807,18 @@ FPSButton.MouseButton1Click:Connect(function()
 
     pcall(function()
         if FPSEnabled then
-            MT7Monitor.Create(Main)
-            MT7Monitor.Start()
-            MT7Monitor.SetVisible(true)
-
+            )
+                
+        MT7Monitor.Create(Main)
+        MT7Monitor.SetFPSEnabled(true)
+        MT7Monitor.Start()
+        MT7Monitor.SetVisible(true)
+                
             FPSButton.Text = "🟢  FPS MONITOR  ON"
             FPSButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
         else
-            MT7Monitor.SetVisible(false)
-            MT7Monitor.Stop()
+                
+            MT7Monitor.SetFPSEnabled(false)
 
             FPSButton.Text = "🔴  FPS MONITOR  OFF"
             FPSButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
@@ -832,17 +835,18 @@ PingButton.MouseButton1Click:Connect(function()
 
     pcall(function()
         if PingEnabled then
-            MT7Monitor.Create(Main)
-            MT7Monitor.Start()
-            MT7Monitor.SetVisible(true)
+            )
 
+        MT7Monitor.Create(Main)
+        MT7Monitor.SetPingEnabled(true)
+        MT7Monitor.Start()
+        MT7Monitor.SetVisible(true)
+            
             PingButton.Text = "🟢  PING MONITOR  ON"
             PingButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
         else
-            if not FPSEnabled then
-                MT7Monitor.SetVisible(false)
-                MT7Monitor.Stop()
-            end
+            
+            MT7Monitor.SetPingEnabled(false)
 
             PingButton.Text = "🔴  PING MONITOR  OFF"
             PingButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)

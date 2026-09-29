@@ -25,14 +25,123 @@ local saved = {}
 local FreezeProtectionEnabled = false
 local FreezeTimer = 0
 
+local FreezeSaved = {}
+local FreezeOldQuality = nil
+
+local function FreezeRemember(object, property)
+    if not object then
+        return
+    end
+
+    FreezeSaved[object] = FreezeSaved[object] or {}
+
+    if FreezeSaved[object][property] == nil then
+        local ok, value = pcall(function()
+            return object[property]
+        end)
+
+        if ok then
+            FreezeSaved[object][property] = value
+        end
+    end
+end
+
+local function FreezeSet(object, property, value)
+    if not object then
+        return
+    end
+
+    FreezeRemember(object, property)
+
+    pcall(function()
+        object[property] = value
+    end)
+end
+
+local function FreezeOptimizeLighting()
+    -- Sombras
+    FreezeSet(Lighting, "GlobalShadows", false)
+
+    -- Iluminação simplificada
+    pcall(function()
+        FreezeSet(Lighting, "EnvironmentDiffuseScale", 0)
+        FreezeSet(Lighting, "EnvironmentSpecularScale", 0)
+    end)
+
+    -- Efeitos pesados da iluminação
+    for _, object in ipairs(Lighting:GetDescendants()) do
+        if object:IsA("BloomEffect")
+        or object:IsA("BlurEffect")
+        or object:IsA("ColorCorrectionEffect")
+        or object:IsA("DepthOfFieldEffect")
+        or object:IsA("SunRaysEffect") then
+
+            FreezeSet(object, "Enabled", false)
+        end
+    end
+end
+
+local function FreezeOptimizeTerrain()
+    local terrain = Workspace:FindFirstChildOfClass("Terrain")
+
+    if not terrain then
+        return
+    end
+
+    pcall(function()
+        FreezeSet(terrain, "Decoration", false)
+    end)
+
+    pcall(function()
+        FreezeSet(terrain, "WaterWaveSize", 0)
+        FreezeSet(terrain, "WaterWaveSpeed", 0)
+        FreezeSet(terrain, "WaterReflectance", 0)
+    end)
+end
+
 local function EnableFreezeProtection()
+    if FreezeProtectionEnabled then
+        return
+    end
+
     FreezeProtectionEnabled = true
     FreezeTimer = 0
+
+    pcall(function()
+        FreezeOldQuality = settings().Rendering.QualityLevel
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    end)
+
+    -- Reduz detalhes imediatamente,
+    -- mas sem escanear o Workspace inteiro.
+    FreezeOptimizeLighting()
+    FreezeOptimizeTerrain()
 end
 
 local function DisableFreezeProtection()
     FreezeProtectionEnabled = false
     FreezeTimer = 0
+
+    -- Restaura propriedades alteradas pelo Anti-Freeze.
+    for object, properties in pairs(FreezeSaved) do
+        if object then
+            for property, value in pairs(properties) do
+                pcall(function()
+                    object[property] = value
+                end)
+            end
+        end
+    end
+
+    table.clear(FreezeSaved)
+
+    if FreezeOldQuality then
+        pcall(function()
+            settings().Rendering.QualityLevel = FreezeOldQuality
+        end)
+    end
+
+    FreezeOldQuality = nil
 end
 
 function MT7FPS.EnableFreezeProtection()

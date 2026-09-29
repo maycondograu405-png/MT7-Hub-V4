@@ -307,7 +307,6 @@ end
 --========================================================--
 
 function MT7Themes.ApplyToGui(gui, themeName)
-
     if not gui then
         return false
     end
@@ -331,24 +330,43 @@ function MT7Themes.ApplyToGui(gui, themeName)
                 or object:IsA("ScrollingFrame")
                 or object:IsA("ViewportFrame") then
 
-                object.BackgroundColor3 = theme.Panel
+                if object.BackgroundTransparency < 1 then
+                    object.BackgroundColor3 = theme.Panel
+                end
 
-            -- 🔘 BOTÕES
-            elseif object:IsA("TextButton") then
+            -- 🔘 BOTÕES / CAIXAS
+            elseif object:IsA("TextButton")
+                or object:IsA("TextBox") then
 
-                object.BackgroundColor3 = theme.Secondary
+                if object.BackgroundTransparency < 1 then
+                    object.BackgroundColor3 = theme.Secondary
+                end
+
                 object.TextColor3 = theme.Text
 
             -- 📝 TEXTOS
             elseif object:IsA("TextLabel") then
 
-                object.TextColor3 = theme.Text
+                local currentColor = object.TextColor3
 
-            -- ✏️ CAIXA DE TEXTO
-            elseif object:IsA("TextBox") then
+                -- Mantém cores especiais de status
+                if currentColor == Color3.fromRGB(65, 220, 130)
+                    or currentColor == Color3.fromRGB(80, 255, 150) then
 
-                object.BackgroundColor3 = theme.Secondary
-                object.TextColor3 = theme.Text
+                    object.TextColor3 = theme.Success or currentColor
+
+                elseif currentColor == Color3.fromRGB(240, 70, 80)
+                    or currentColor == Color3.fromRGB(255, 80, 100) then
+
+                    object.TextColor3 = theme.Error or currentColor
+
+                elseif currentColor == Color3.fromRGB(55, 130, 255) then
+
+                    object.TextColor3 = theme.Accent
+
+                else
+                    object.TextColor3 = theme.Text
+                end
 
             -- 🟣 CONTORNOS
             elseif object:IsA("UIStroke") then
@@ -360,11 +378,10 @@ function MT7Themes.ApplyToGui(gui, themeName)
                 or object:IsA("ImageButton") then
 
                 object.ImageColor3 = theme.Text
-
             end
         end
 
-        -- 🌈 FUNDO PRINCIPAL
+        -- 🎨 FUNDO PRINCIPAL
         if gui:IsA("GuiObject") then
             gui.BackgroundColor3 = theme.Background
         end

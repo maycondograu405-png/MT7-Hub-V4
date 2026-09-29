@@ -608,4 +608,132 @@ print("🧊 Freeze Protection: READY")
 print("⚡ Adaptive Engine: READY")
 print("==============================================")
 
+--==================================================
+-- 🚀 FPS MASTER V4.1
+--==================================================
+
+local FPSMasterEnabled = false
+local FPSMasterLevel = "FREE"
+
+local FPSMasterSaved = {}
+
+local function FPSMasterSave(object, property)
+    if not object then
+        return
+    end
+
+    FPSMasterSaved[object] = FPSMasterSaved[object] or {}
+
+    if FPSMasterSaved[object][property] == nil then
+        pcall(function()
+            FPSMasterSaved[object][property] = object[property]
+        end)
+    end
+end
+
+local function FPSMasterSet(object, property, value)
+    FPSMasterSave(object, property)
+
+    pcall(function()
+        object[property] = value
+    end)
+end
+
+local function FPSMasterOptimizeBasic()
+    for _, object in ipairs(workspace:GetDescendants()) do
+
+        if object:IsA("ParticleEmitter")
+            or object:IsA("Trail")
+            or object:IsA("Beam")
+            or object:IsA("Smoke")
+            or object:IsA("Fire")
+            or object:IsA("Sparkles") then
+
+            FPSMasterSet(object, "Enabled", false)
+
+        elseif object:IsA("PostEffect") then
+
+            FPSMasterSet(object, "Enabled", false)
+
+        elseif object:IsA("PointLight")
+            or object:IsA("SpotLight")
+            or object:IsA("SurfaceLight") then
+
+            FPSMasterSet(object, "Enabled", false)
+
+        end
+    end
+end
+
+local function FPSMasterOptimizeAdvanced()
+
+    FPSMasterOptimizeBasic()
+
+    for _, object in ipairs(workspace:GetDescendants()) do
+
+        if object:IsA("Decal")
+            or object:IsA("Texture") then
+
+            FPSMasterSet(object, "Transparency", 1)
+
+        elseif object:IsA("BasePart") then
+
+            FPSMasterSet(object, "CastShadow", false)
+
+        end
+    end
+
+    pcall(function()
+        FPSMasterSet(Lighting, "GlobalShadows", false)
+    end)
+end
+
+function MT7FPS.EnableFPSMaster(level)
+
+    if FPSMasterEnabled then
+        return true
+    end
+
+    FPSMasterEnabled = true
+    FPSMasterLevel = level or "FREE"
+
+    if FPSMasterLevel == "KEY" then
+        FPSMasterOptimizeAdvanced()
+    else
+        FPSMasterOptimizeBasic()
+    end
+
+    return true
+end
+
+function MT7FPS.DisableFPSMaster()
+
+    if not FPSMasterEnabled then
+        return
+    end
+
+    FPSMasterEnabled = false
+
+    for object, properties in pairs(FPSMasterSaved) do
+
+        if object and object.Parent then
+
+            for property, value in pairs(properties) do
+
+                pcall(function()
+                    object[property] = value
+                end)
+
+            end
+        end
+    end
+
+    FPSMasterSaved = {}
+
+end
+
+function MT7FPS.IsFPSMasterEnabled()
+    return FPSMasterEnabled
+end
+
 return MT7FPS

@@ -201,8 +201,7 @@ MT7Themes.Themes = {
             255, 80, 100
         )
     },
-
-    Moon = {
+        Moon = {
         Name = "🌙 Moon",
 
         Background = Color3.fromRGB(
@@ -302,11 +301,13 @@ function MT7Themes.GetCurrent()
     return MT7Themes.CurrentTheme
 
 end
+
 --========================================================--
 --                  APPLY TO GUI                        --
 --========================================================--
 
 function MT7Themes.ApplyToGui(gui, themeName)
+
     if not gui then
         return false
     end
@@ -390,7 +391,6 @@ function MT7Themes.ApplyToGui(gui, themeName)
 
     return ok
 end
-
 --========================================================--
 --                 APPLY ACCENT                         --
 --========================================================--
@@ -496,3 +496,5 @@ function MT7Themes.GetDescription(name)
 
     return descriptions[name]
 end
+
+return MT7Themes

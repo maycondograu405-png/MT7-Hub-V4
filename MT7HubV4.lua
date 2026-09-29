@@ -347,61 +347,6 @@ ModeButton.Position = UDim2.new(1, -82, 0, 15)
 ModeButton.Size = UDim2.new(0, 68, 0, 30)
 
 --==================================================
--- 🔐 SISTEMA DE TROCA FREE / KEY
---==================================================
-
-ModeButton.MouseButton1Click:Connect(function()
-
-    -- 🔒 Ainda não desbloqueou a KEY
-    if CurrentMode == "FREE" and not Unlocked then
-
-        CurrentMode = "FREE"
-
-        ModeButton.Text = "FREE"
-
-        if ModeLabel then
-            ModeLabel.Text = "FREE MODE"
-        end
-
-        -- Abre a tela para colocar a KEY
-        if KeyScreen then
-            KeyScreen.Visible = true
-        end
-
-        if KeyStatus then
-            KeyStatus.Text = "🔐 DIGITE SUA KEY PARA LIBERAR O MODO KEY"
-        end
-
-        return
-    end
-
-    -- 🔓 KEY já desbloqueada → entrar no KEY
-    if CurrentMode == "FREE" and Unlocked then
-
-        CurrentMode = "KEY"
-
-        ModeButton.Text = "KEY"
-
-        if ModeLabel then
-            ModeLabel.Text = "KEY MODE"
-        end
-
-    else
-
-        -- 🔄 Voltar para FREE
-        CurrentMode = "FREE"
-
-        ModeButton.Text = "FREE"
-
-        if ModeLabel then
-            ModeLabel.Text = "FREE MODE"
-        end
-
-    end
-
-end)
-
---==================================================
 -- SIDEBAR
 --==================================================
 
@@ -1105,6 +1050,172 @@ SuperOptimizationButton.MouseButton1Click:Connect(function()
     end
 
 end)
+
+--==================================================
+-- 🔐 SISTEMA FREE / KEY
+--==================================================
+
+local function UpdateModeButtons()
+
+    if CurrentMode == "KEY" and Unlocked then
+
+        -- 🔐 MODO KEY
+        FPSMasterButton.Visible = true
+        AntiFreezePROButton.Visible = true
+        FPSBoosterPROButton.Visible = true
+        SuperOptimizationButton.Visible = true
+
+    else
+
+        -- 🆓 MODO FREE
+        FPSMasterButton.Visible = true
+
+        AntiFreezePROButton.Visible = false
+        FPSBoosterPROButton.Visible = false
+        SuperOptimizationButton.Visible = false
+
+        -- Desliga os recursos PRO caso estivessem ativos
+        if AntiFreezePROEnabledUI then
+            AntiFreezePROEnabledUI = false
+
+            pcall(function()
+                MT7FPS.DisableAntiFreezePRO()
+            end)
+
+            AntiFreezePROButton.Text =
+                "🔴  ANTI-FREEZE PRO: OFF"
+        end
+
+        if FPSBoosterPROEnabledUI then
+            FPSBoosterPROEnabledUI = false
+
+            pcall(function()
+                MT7FPS.DisableFPSBoosterPRO()
+            end)
+
+            FPSBoosterPROButton.Text =
+                "🔴  FPS BOOSTER PRO: OFF"
+        end
+
+        if SuperOptimizationEnabledUI then
+            SuperOptimizationEnabledUI = false
+
+            pcall(function()
+                MT7FPS.DisableSuperOptimization()
+            end)
+
+            SuperOptimizationButton.Text =
+                "🔴  SUPER OTIMIZAÇÃO: OFF"
+        end
+
+    end
+
+end
+
+
+ModeButton.MouseButton1Click:Connect(function()
+
+    -- 🔒 KEY ainda não desbloqueada
+    if not Unlocked then
+
+        CurrentMode = "FREE"
+        ModeButton.Text = "FREE"
+
+        if KeyScreen then
+            KeyScreen.Visible = true
+        end
+
+        if KeyStatus then
+            KeyStatus.Text =
+                "🔐 DIGITE SUA KEY PARA LIBERAR O MODO KEY"
+        end
+
+        UpdateModeButtons()
+
+        return
+    end
+
+
+    -- 🔓 KEY desbloqueada
+    if CurrentMode == "FREE" then
+
+        CurrentMode = "KEY"
+        ModeButton.Text = "KEY"
+
+    else
+
+        CurrentMode = "FREE"
+        ModeButton.Text = "FREE"
+
+    end
+
+    UpdateModeButtons()
+
+end)
+
+
+-- Estado inicial
+UpdateModeButtons()
+
+--==================================================
+-- 🔐 CONTROLE DE VISIBILIDADE FREE / KEY
+--==================================================
+
+local function UpdateModeButtons()
+
+    -- 🆓 FREE
+    if CurrentMode == "FREE" or not Unlocked then
+
+        -- FPS Master continua disponível no FREE
+        FPSMasterButton.Visible = true
+
+        -- Recursos exclusivos da KEY
+        AntiFreezePROButton.Visible = false
+        FPSBoosterPROButton.Visible = false
+        SuperOptimizationButton.Visible = false
+
+        -- Se algum PRO estava ligado, desliga
+        pcall(function()
+            if AntiFreezePROEnabledUI then
+                AntiFreezePROEnabledUI = false
+                MT7FPS.DisableAntiFreezePRO()
+                AntiFreezePROButton.Text =
+                    "🔴  ANTI-FREEZE PRO: OFF"
+            end
+        end)
+
+        pcall(function()
+            if FPSBoosterPROEnabledUI then
+                FPSBoosterPROEnabledUI = false
+                MT7FPS.DisableFPSBoosterPRO()
+                FPSBoosterPROButton.Text =
+                    "🔴  FPS BOOSTER PRO: OFF"
+            end
+        end)
+
+        pcall(function()
+            if SuperOptimizationEnabledUI then
+                SuperOptimizationEnabledUI = false
+                MT7FPS.DisableSuperOptimization()
+                SuperOptimizationButton.Text =
+                    "🔴  SUPER OTIMIZAÇÃO: OFF"
+            end
+        end)
+
+    -- 🔐 KEY
+    elseif CurrentMode == "KEY" and Unlocked then
+
+        FPSMasterButton.Visible = true
+        AntiFreezePROButton.Visible = true
+        FPSBoosterPROButton.Visible = true
+        SuperOptimizationButton.Visible = true
+
+    end
+
+end
+
+-- Estado inicial
+UpdateModeButtons()
 
 --==================================================
 -- 🔘 ESTADOS

@@ -1292,9 +1292,21 @@ BoosterButton.MouseButton1Click:Connect(function()
 
     if not BoosterEnabled then
 
-        local success = pcall(function()
-            MT7FPS.QuickBoost()
-        end)
+        local success, err = pcall(function()
+    if not MT7FPS then
+        error("MT7FPS não foi carregado")
+    end
+
+    if not MT7FPS.QuickBoost then
+        error("QuickBoost não existe")
+    end
+
+    MT7FPS.QuickBoost()
+end)
+
+if not success then
+    warn("[MT7 HUB] ERRO FPS BOOSTER: " .. tostring(err))
+            end
 
         if success then
             BoosterEnabled = true

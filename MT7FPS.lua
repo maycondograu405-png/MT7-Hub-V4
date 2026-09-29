@@ -640,8 +640,10 @@ local function FPSMasterSet(object, property, value)
 end
 
 local function FPSMasterOptimizeBasic()
+
     for _, object in ipairs(workspace:GetDescendants()) do
 
+        -- ✨ Partículas e efeitos
         if object:IsA("ParticleEmitter")
             or object:IsA("Trail")
             or object:IsA("Beam")
@@ -651,18 +653,31 @@ local function FPSMasterOptimizeBasic()
 
             FPSMasterSet(object, "Enabled", false)
 
+        -- 🌫️ Pós-processamento
         elseif object:IsA("PostEffect") then
 
             FPSMasterSet(object, "Enabled", false)
 
+        -- 💡 Luzes locais
         elseif object:IsA("PointLight")
             or object:IsA("SpotLight")
             or object:IsA("SurfaceLight") then
 
             FPSMasterSet(object, "Enabled", false)
 
+        -- 🌑 Sombras dos objetos
+        elseif object:IsA("BasePart") then
+
+            FPSMasterSet(object, "CastShadow", false)
+
         end
     end
+
+    -- 🌑 Sombras globais
+    pcall(function()
+        FPSMasterSet(Lighting, "GlobalShadows", false)
+    end)
+
 end
 
 local function FPSMasterOptimizeAdvanced()

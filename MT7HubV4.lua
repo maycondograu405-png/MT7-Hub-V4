@@ -58,7 +58,11 @@ local C = {
 
 local function LoadModule(name)
     local ok, result = pcall(function()
-        local source = game:HttpGet(BASE_URL .. name .. ".lua")
+
+        local source = game:HttpGet(
+            BASE_URL .. name .. ".lua?v=4.1.3"
+        )
+
         local fn = loadstring(source)
 
         if not fn then
@@ -66,6 +70,7 @@ local function LoadModule(name)
         end
 
         return fn()
+
     end)
 
     if ok then
@@ -75,13 +80,6 @@ local function LoadModule(name)
     warn("[MT7] Falha ao carregar " .. name)
     return nil
 end
-
-local MT7FPS = LoadModule("MT7FPS")
-local MT7Animations = LoadModule("MT7Animations")
-local MT7Letters = LoadModule("MT7Letters")
-local MT7Themes = LoadModule("MT7Themes")
-local MT7Monitor = LoadModule("MT7Monitor")
-local MT7Settings = LoadModule("MT7Settings")
 
 --==================================================
 -- GUI PRINCIPAL

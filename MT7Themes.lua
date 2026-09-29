@@ -326,43 +326,47 @@ function MT7Themes.ApplyToGui(gui, themeName)
 
         for _, object in ipairs(gui:GetDescendants()) do
 
+            -- 🖼️ PAINÉIS
             if object:IsA("Frame")
                 or object:IsA("ScrollingFrame")
                 or object:IsA("ViewportFrame") then
 
-                pcall(function()
-                    object.BackgroundColor3 = theme.Panel
-                end)
+                object.BackgroundColor3 = theme.Panel
 
-            elseif object:IsA("TextLabel")
-                or object:IsA("TextButton")
-                or object:IsA("TextBox") then
+            -- 🔘 BOTÕES
+            elseif object:IsA("TextButton") then
 
-                pcall(function()
-                    object.TextColor3 = theme.Text
-                end)
+                object.BackgroundColor3 = theme.Secondary
+                object.TextColor3 = theme.Text
 
+            -- 📝 TEXTOS
+            elseif object:IsA("TextLabel") then
+
+                object.TextColor3 = theme.Text
+
+            -- ✏️ CAIXA DE TEXTO
+            elseif object:IsA("TextBox") then
+
+                object.BackgroundColor3 = theme.Secondary
+                object.TextColor3 = theme.Text
+
+            -- 🟣 CONTORNOS
             elseif object:IsA("UIStroke") then
 
-                pcall(function()
-                    object.Color = theme.Accent
-                end)
+                object.Color = theme.Accent
 
+            -- 🖼️ IMAGENS
             elseif object:IsA("ImageLabel")
                 or object:IsA("ImageButton") then
 
-                pcall(function()
-                    object.ImageColor3 = theme.Text
-                end)
+                object.ImageColor3 = theme.Text
 
             end
-
         end
 
+        -- 🌈 FUNDO PRINCIPAL
         if gui:IsA("GuiObject") then
-            pcall(function()
-                gui.BackgroundColor3 = theme.Background
-            end)
+            gui.BackgroundColor3 = theme.Background
         end
 
     end)

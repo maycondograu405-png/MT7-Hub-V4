@@ -635,12 +635,33 @@ end)
 
 local function ApplyTheme(themeName)
     pcall(function()
+
+        local theme = MT7Themes.Get(themeName)
+
+        if not theme then
+            return
+        end
+
+        -- 🎨 Atualiza as cores usadas pela interface
+        C.Black = theme.Background
+        C.Background = theme.Background
+        C.Panel = theme.Panel
+        C.Panel2 = theme.Secondary
+
+        C.Purple = theme.Accent
+        C.Purple2 = theme.Accent2
+
+        C.White = theme.Text
+        C.SubText = theme.SubText
+
+        -- 🌈 Aplica o tema completo
         MT7Themes.Set(themeName)
         MT7Themes.ApplyToGui(Gui, themeName)
         MT7Themes.ApplyAccent(Gui, themeName)
         MT7Themes.ApplyLighting(themeName)
 
         CurrentTheme = themeName
+
     end)
 end
 

@@ -483,11 +483,34 @@ end
 --========================================================--
 
 function MT7FPS.QuickBoost()
-    MT7FPS.Enabled = true
-    MT7FPS.Extreme = false
-    MT7FPS.Level = 2
+    -- FPS BOOSTER LEVE
+    -- Não ativa Adaptive
+    -- Não executa optimizeWorld()
+    -- Não percorre o Workspace
 
-    optimizeWorld(2)
+    pcall(function()
+        MT7FPS.Enabled = false
+        MT7FPS.Extreme = false
+        MT7FPS.Level = 0
+
+        -- Qualidade mínima
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+
+        -- Sombras desligadas
+        setProperty(Lighting, "GlobalShadows", false)
+
+        -- Remove efeitos pesados da iluminação
+        for _, object in ipairs(Lighting:GetDescendants()) do
+            if object:IsA("BloomEffect")
+                or object:IsA("BlurEffect")
+                or object:IsA("ColorCorrectionEffect")
+                or object:IsA("DepthOfFieldEffect")
+                or object:IsA("SunRaysEffect") then
+
+                setProperty(object, "Enabled", false)
+            end
+        end
+    end)
 
     return true
 end

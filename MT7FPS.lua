@@ -1002,6 +1002,102 @@ function MT7FPS.IsFPSBoosterPROEnabled()
     return FPSProEnabled
 end
 
+--==================================================--
+--              🚀 SUPER OTIMIZAÇÃO                --
+--        Modo extremo de desempenho KEY            --
+--==================================================--
+
+local SuperOptimizationEnabled = false
+
+function MT7FPS.EnableSuperOptimization()
+
+    if SuperOptimizationEnabled then
+        return true
+    end
+
+    SuperOptimizationEnabled = true
+
+    -- ⚡ FPS BOOSTER PRO
+    pcall(function()
+        MT7FPS.EnableFPSBoosterPRO()
+    end)
+
+    -- 🛡️ ANTI-FREEZE PRO
+    pcall(function()
+        MT7FPS.EnableAntiFreezePRO()
+    end)
+
+    -- 🧠 FPS MASTER AVANÇADO
+    pcall(function()
+        MT7FPS.EnableFPSMaster("KEY")
+    end)
+
+    -- Qualidade mínima de renderização
+    pcall(function()
+        settings().Rendering.QualityLevel =
+            Enum.QualityLevel.Level01
+    end)
+
+    -- Otimização adicional de iluminação
+    pcall(function()
+
+        Lighting.GlobalShadows = false
+
+        for _, object in ipairs(
+            Lighting:GetDescendants()
+        ) do
+
+            if object:IsA("PostEffect") then
+
+                pcall(function()
+                    object.Enabled = false
+                end)
+
+            elseif object:IsA("Atmosphere") then
+
+                pcall(function()
+                    object.Density = 0
+                    object.Haze = 0
+                    object.Glare = 0
+                end)
+
+            end
+        end
+
+    end)
+
+    return true
+end
+
+
+function MT7FPS.DisableSuperOptimization()
+
+    if not SuperOptimizationEnabled then
+        return true
+    end
+
+    SuperOptimizationEnabled = false
+
+    -- Desliga primeiro o Anti-Freeze PRO
+    pcall(function()
+        MT7FPS.DisableAntiFreezePRO()
+    end)
+
+    -- Depois o FPS Booster PRO
+    pcall(function()
+        MT7FPS.DisableFPSBoosterPRO()
+    end)
+
+    return true
+end
+
+
+function MT7FPS.IsSuperOptimizationEnabled()
+
+    return SuperOptimizationEnabled
+
+end
+
 function MT7FPS.ExtremeBoost()
     MT7FPS.Enabled = true
     MT7FPS.Extreme = true

@@ -24,6 +24,9 @@ local monitorLabel = nil
 local frameCounter = 0
 local lastFPSUpdate = os.clock()
 
+local ShowFPS = false
+local ShowPing = false
+
 --------------------------------------------------
 -- PEGAR PING
 --------------------------------------------------
@@ -158,14 +161,45 @@ end
 --------------------------------------------------
 
 function MT7Monitor.UpdateDisplay()
-
     if not monitorLabel then
         return
     end
 
-    monitorLabel.Text =
-        "FPS: " .. tostring(MT7Monitor.FPS) ..
-        "\nPING: " .. tostring(MT7Monitor.Ping) .. " ms"
+    local text = ""
+
+    if ShowFPS then
+        text = text .. "FPS: " .. tostring(MT7Monitor.FPS)
+    end
+
+    if ShowPing then
+        if text ~= "" then
+            text = text .. "\n"
+        end
+
+        text = text .. "PING: " .. tostring(MT7Monitor.Ping) .. " ms"
+    end
+
+    monitorLabel.Text = text
+end
+
+function MT7Monitor.SetFPSEnabled(state)
+    ShowFPS = state
+    MT7Monitor.UpdateDisplay()
+
+    if not ShowFPS and not ShowPing then
+        MT7Monitor.Stop()
+        MT7Monitor.SetVisible(false)
+    end
+end
+
+function MT7Monitor.SetPingEnabled(state)
+    ShowPing = state
+    MT7Monitor.UpdateDisplay()
+
+    if not ShowFPS and not ShowPing then
+        MT7Monitor.Stop()
+        MT7Monitor.SetVisible(false)
+    end
 end
 
 --------------------------------------------------

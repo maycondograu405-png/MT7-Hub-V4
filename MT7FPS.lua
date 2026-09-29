@@ -376,25 +376,21 @@ connections.Heartbeat = RunService.Heartbeat:Connect(function(dt)
 
     protectionTimer += dt
 
-    -- Não faz otimizações pesadas a cada frame.
-    -- O intervalo evita sobrecarregar o próprio script.
-    if protectionTimer < 3 then
+    -- Anti-Freeze leve:
+    -- verifica somente a cada 5 segundos.
+    if protectionTimer < 5 then
         return
     end
 
     protectionTimer = 0
 
-    if currentFPS > 0 and currentFPS < 30 then
-        MT7FPS.Level = 3
-        optimizeWorld(3)
-
-    elseif currentFPS < 45 then
-        MT7FPS.Level = 2
-        optimizeWorld(2)
-
-    elseif currentFPS < 60 then
-        MT7FPS.Level = 1
-        optimizeWorld(1)
+    -- Só aplica uma otimização leve quando o FPS
+    -- estiver realmente baixo.
+    if currentFPS > 0 and currentFPS < 35 then
+        if MT7FPS.Level < 1 then
+            MT7FPS.Level = 1
+            optimizeWorld(1)
+        end
     end
 end)
 

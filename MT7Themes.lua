@@ -450,23 +450,9 @@ end
 --========================================================--
 
 function MT7Themes.ApplyLighting(themeName)
-
-    local theme = MT7Themes.Themes[themeName]
-
-    if not theme then
-        return false
-    end
-
-    local ok = pcall(function()
-
-        Lighting.Ambient = theme.Accent2
-        Lighting.OutdoorAmbient = theme.Accent2
-        Lighting.ColorShift_Top = theme.Accent
-        Lighting.ColorShift_Bottom = theme.Background
-
-    end)
-
-    return ok
+    -- Os temas do MT7 HUB não alteram a iluminação do jogo.
+    -- A mudança de cor fica somente na interface.
+    return true
 end
 
 --========================================================--

@@ -157,6 +157,371 @@ function MT7FPS.IsFreezeProtectionEnabled()
     return FreezeProtectionEnabled
 end
 
+--========================================================--
+--              ANTI-FREEZE PRO V2                      --
+--        Proteção adaptativa contra quedas              --
+--========================================================--
+
+local AntiFreezePROEnabled = false
+local AntiFreezePROTimer = 0
+local AntiFreezePROLevel = 0
+local AntiFreezePROCooldown = 0
+
+local AntiFreezePROSaved = {}
+local AntiFreezePROOldQuality = nil
+
+local function AntiFreezePROSave(object, property)
+
+    if not object then
+        return
+    end
+
+    AntiFreezePROSaved[object] =
+        AntiFreezePROSaved[object] or {}
+
+    if AntiFreezePROSaved[object][property] == nil then
+
+        local ok, value = pcall(function()
+            return object[property]
+        end)
+
+        if ok then
+            AntiFreezePROSaved[object][property] = value
+        end
+    end
+end
+
+local function AntiFreezePROSet(object, property, value)
+
+    if not object then
+        return
+    end
+
+    AntiFreezePROSave(object, property)
+
+    pcall(function()
+        object[property] = value
+    end)
+end
+
+--========================================================--
+-- NÍVEL 1 — PROTEÇÃO LEVE
+--========================================================--
+
+local function AntiFreezePROLevel1()
+
+    if AntiFreezePROLevel >= 1 then
+        return
+    end
+
+    AntiFreezePROLevel = 1
+
+    pcall(function()
+
+        AntiFreezePROSet(
+            Lighting,
+            "GlobalShadows",
+            false
+        )
+
+    end)
+end
+
+--========================================================--
+-- NÍVEL 2 — ILUMINAÇÃO
+--========================================================--
+
+local function AntiFreezePROLevel2()
+
+    if AntiFreezePROLevel >= 2 then
+        return
+    end
+
+    AntiFreezePROLevel = 2
+
+    pcall(function()
+
+        for _, object in ipairs(
+            Lighting:GetDescendants()
+        ) do
+
+            if object:IsA("BloomEffect")
+                or object:IsA("BlurEffect")
+                or object:IsA("ColorCorrectionEffect")
+                or object:IsA("DepthOfFieldEffect")
+                or object:IsA("SunRaysEffect") then
+
+                AntiFreezePROSet(
+                    object,
+                    "Enabled",
+                    false
+                )
+
+            elseif object:IsA("Atmosphere") then
+
+                AntiFreezePROSet(
+                    object,
+                    "Density",
+                    0
+                )
+
+                AntiFreezePROSet(
+                    object,
+                    "Haze",
+                    0
+                )
+
+                AntiFreezePROSet(
+                    object,
+                    "Glare",
+                    0
+                )
+            end
+        end
+
+    end)
+end
+
+--========================================================--
+-- NÍVEL 3 — EFEITOS DO MAPA
+--========================================================--
+
+local function AntiFreezePROLevel3()
+
+    if AntiFreezePROLevel >= 3 then
+        return
+    end
+
+    AntiFreezePROLevel = 3
+
+    pcall(function()
+
+        -- Varredura feita somente quando o FPS
+        -- entra em estado crítico.
+
+        for _, object in ipairs(
+            Workspace:GetDescendants()
+        ) do
+
+            if object:IsA("ParticleEmitter")
+                or object:IsA("Trail")
+                or object:IsA("Beam")
+                or object:IsA("Smoke")
+                or object:IsA("Fire")
+                or object:IsA("Sparkles") then
+
+                AntiFreezePROSet(
+                    object,
+                    "Enabled",
+                    false
+                )
+
+            elseif object:IsA("PointLight")
+                or object:IsA("SpotLight")
+                or object:IsA("SurfaceLight") then
+
+                AntiFreezePROSet(
+                    object,
+                    "Enabled",
+                    false
+                )
+
+            elseif object:IsA("BasePart") then
+
+                AntiFreezePROSet(
+                    object,
+                    "CastShadow",
+                    false
+                )
+            end
+        end
+
+    end)
+end
+
+--========================================================--
+-- NÍVEL 4 — QUALIDADE MÍNIMA
+--========================================================--
+
+local function AntiFreezePROLevel4()
+
+    if AntiFreezePROLevel >= 4 then
+        return
+    end
+
+    AntiFreezePROLevel = 4
+
+    pcall(function()
+
+        if not AntiFreezePROOldQuality then
+
+            AntiFreezePROOldQuality =
+                settings().Rendering.QualityLevel
+        end
+
+        settings().Rendering.QualityLevel =
+            Enum.QualityLevel.Level01
+
+    end)
+end
+
+--========================================================--
+-- RESTAURAÇÃO
+--========================================================--
+
+local function AntiFreezePRORestore()
+
+    for object, properties in pairs(
+        AntiFreezePROSaved
+    ) do
+
+        if object and object.Parent then
+
+            for property, value in pairs(properties) do
+
+                pcall(function()
+                    object[property] = value
+                end)
+
+            end
+        end
+    end
+
+    AntiFreezePROSaved = {}
+
+    if AntiFreezePROOldQuality then
+
+        pcall(function()
+
+            settings().Rendering.QualityLevel =
+                AntiFreezePROOldQuality
+
+        end)
+    end
+
+    AntiFreezePROOldQuality = nil
+    AntiFreezePROLevel = 0
+end
+
+--========================================================--
+-- SISTEMA ADAPTATIVO
+--========================================================--
+
+connections.AntiFreezePRO =
+    RunService.Heartbeat:Connect(function(dt)
+
+        if not AntiFreezePROEnabled then
+            return
+        end
+
+        AntiFreezePROTimer += dt
+
+        -- Verificação a cada 0.5 segundo.
+        if AntiFreezePROTimer < 0.5 then
+            return
+        end
+
+        AntiFreezePROTimer = 0
+
+        if currentFPS <= 0 then
+            return
+        end
+
+        -- Evita repetir varreduras pesadas.
+        if AntiFreezePROCooldown > 0 then
+
+            AntiFreezePROCooldown -= 0.5
+
+            if AntiFreezePROCooldown < 0 then
+                AntiFreezePROCooldown = 0
+            end
+        end
+
+        -- FPS saudável
+        if currentFPS >= 45 then
+
+            return
+
+        -- Queda moderada
+        elseif currentFPS >= 35 then
+
+            AntiFreezePROLevel1()
+
+        -- Queda forte
+        elseif currentFPS >= 25 then
+
+            AntiFreezePROLevel1()
+            AntiFreezePROLevel2()
+
+        -- FPS crítico
+        elseif currentFPS >= 18 then
+
+            AntiFreezePROLevel1()
+            AntiFreezePROLevel2()
+
+            if AntiFreezePROCooldown <= 0 then
+
+                AntiFreezePROLevel3()
+
+                AntiFreezePROCooldown = 5
+            end
+
+        -- FPS extremamente crítico
+        else
+
+            AntiFreezePROLevel1()
+            AntiFreezePROLevel2()
+
+            if AntiFreezePROCooldown <= 0 then
+
+                AntiFreezePROLevel3()
+                AntiFreezePROLevel4()
+
+                AntiFreezePROCooldown = 8
+            end
+        end
+
+    end)
+
+--========================================================--
+-- FUNÇÕES PÚBLICAS
+--========================================================--
+
+function MT7FPS.EnableAntiFreezePRO()
+
+    if AntiFreezePROEnabled then
+        return true
+    end
+
+    AntiFreezePROEnabled = true
+    AntiFreezePROTimer = 0
+    AntiFreezePROCooldown = 0
+    AntiFreezePROLevel = 0
+
+    return true
+end
+
+function MT7FPS.DisableAntiFreezePRO()
+
+    if not AntiFreezePROEnabled then
+        return true
+    end
+
+    AntiFreezePROEnabled = false
+
+    AntiFreezePROTimer = 0
+    AntiFreezePROCooldown = 0
+
+    AntiFreezePRORestore()
+
+    return true
+end
+
+function MT7FPS.IsAntiFreezePROEnabled()
+
+    return AntiFreezePROEnabled
+end
+
 local function remember(object, property)
     if not object then
         return
@@ -482,37 +847,159 @@ end
 --                    QUICK BOOST                       --
 --========================================================--
 
-function MT7FPS.QuickBoost()
-    -- FPS BOOSTER LEVE
-    -- Não ativa Adaptive
-    -- Não executa optimizeWorld()
-    -- Não percorre o Workspace
+--========================================================--
+--                 FPS BOOSTER PRO                      --
+--             Exclusivo para modo KEY                  --
+--========================================================--
+
+local FPSProEnabled = false
+local FPSProSaved = {}
+local FPSProOldQuality = nil
+
+local function FPSProSave(object, property)
+    if not object then
+        return
+    end
+
+    FPSProSaved[object] = FPSProSaved[object] or {}
+
+    if FPSProSaved[object][property] == nil then
+        local ok, value = pcall(function()
+            return object[property]
+        end)
+
+        if ok then
+            FPSProSaved[object][property] = value
+        end
+    end
+end
+
+local function FPSProSet(object, property, value)
+    FPSProSave(object, property)
 
     pcall(function()
-        MT7FPS.Enabled = false
-        MT7FPS.Extreme = false
-        MT7FPS.Level = 0
+        object[property] = value
+    end)
+end
 
-        -- Qualidade mínima
-        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+function MT7FPS.EnableFPSBoosterPRO()
 
-        -- Sombras desligadas
-        setProperty(Lighting, "GlobalShadows", false)
+    if FPSProEnabled then
+        return true
+    end
 
-        -- Remove efeitos pesados da iluminação
+    FPSProEnabled = true
+
+    pcall(function()
+        FPSProOldQuality = settings().Rendering.QualityLevel
+        settings().Rendering.QualityLevel =
+            Enum.QualityLevel.Level01
+    end)
+
+    -- Sombras globais
+    FPSProSet(Lighting, "GlobalShadows", false)
+
+    -- Efeitos pesados da iluminação
+    pcall(function()
         for _, object in ipairs(Lighting:GetDescendants()) do
+
             if object:IsA("BloomEffect")
                 or object:IsA("BlurEffect")
                 or object:IsA("ColorCorrectionEffect")
                 or object:IsA("DepthOfFieldEffect")
                 or object:IsA("SunRaysEffect") then
 
-                setProperty(object, "Enabled", false)
+                FPSProSet(object, "Enabled", false)
+
+            elseif object:IsA("Atmosphere") then
+
+                FPSProSet(object, "Density", 0)
+                FPSProSet(object, "Haze", 0)
+                FPSProSet(object, "Glare", 0)
             end
         end
     end)
 
+    -- Otimização pesada do mapa
+    pcall(function()
+
+        for _, object in ipairs(Workspace:GetDescendants()) do
+
+            -- Partículas e efeitos
+            if object:IsA("ParticleEmitter")
+                or object:IsA("Trail")
+                or object:IsA("Beam")
+                or object:IsA("Smoke")
+                or object:IsA("Fire")
+                or object:IsA("Sparkles") then
+
+                FPSProSet(object, "Enabled", false)
+
+            -- Luzes locais
+            elseif object:IsA("PointLight")
+                or object:IsA("SpotLight")
+                or object:IsA("SurfaceLight") then
+
+                FPSProSet(object, "Enabled", false)
+
+            -- Sombras dos objetos
+            elseif object:IsA("BasePart") then
+
+                FPSProSet(object, "CastShadow", false)
+                FPSProSet(object, "Material", Enum.Material.SmoothPlastic)
+
+            -- Texturas
+            elseif object:IsA("Decal")
+                or object:IsA("Texture") then
+
+                FPSProSet(object, "Transparency", 1)
+            end
+        end
+
+    end)
+
     return true
+end
+
+function MT7FPS.DisableFPSBoosterPRO()
+
+    if not FPSProEnabled then
+        return true
+    end
+
+    FPSProEnabled = false
+
+    -- Restaurar propriedades
+    for object, properties in pairs(FPSProSaved) do
+
+        if object and object.Parent then
+
+            for property, value in pairs(properties) do
+
+                pcall(function()
+                    object[property] = value
+                end)
+
+            end
+        end
+    end
+
+    -- Restaurar qualidade
+    if FPSProOldQuality then
+        pcall(function()
+            settings().Rendering.QualityLevel =
+                FPSProOldQuality
+        end)
+    end
+
+    FPSProSaved = {}
+    FPSProOldQuality = nil
+
+    return true
+end
+
+function MT7FPS.IsFPSBoosterPROEnabled()
+    return FPSProEnabled
 end
 
 function MT7FPS.ExtremeBoost()

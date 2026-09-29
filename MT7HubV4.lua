@@ -82,6 +82,16 @@ local function LoadModule(name)
 end
 
 --==================================================
+-- 📦 CARREGAMENTO DOS MÓDULOS
+--==================================================
+
+local MT7Letters = LoadModule("MT7Letters")
+local MT7Themes = LoadModule("MT7Themes")
+local MT7Monitor = LoadModule("MT7Monitor")
+local MT7FPS = LoadModule("MT7FPS")
+local MT7Settings = LoadModule("MT7Settings")
+
+--==================================================
 -- GUI PRINCIPAL
 --==================================================
 

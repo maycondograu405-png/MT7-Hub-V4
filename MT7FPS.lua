@@ -680,27 +680,63 @@ local function FPSMasterOptimizeBasic()
 
 end
 
+--==================================================
+-- 🔑 FPS MASTER KEY - OTIMIZAÇÃO AVANÇADA
+--==================================================
+
 local function FPSMasterOptimizeAdvanced()
 
+    -- Primeiro aplica a base do FREE
     FPSMasterOptimizeBasic()
 
     for _, object in ipairs(workspace:GetDescendants()) do
 
+        -- 🖼️ Texturas e decals
         if object:IsA("Decal")
             or object:IsA("Texture") then
 
             FPSMasterSet(object, "Transparency", 1)
 
+        -- 🧱 Materiais pesados
         elseif object:IsA("BasePart") then
 
             FPSMasterSet(object, "CastShadow", false)
 
+            pcall(function()
+                FPSMasterSet(object, "Material", Enum.Material.SmoothPlastic)
+            end)
+
+        -- ✨ Efeitos adicionais
+        elseif object:IsA("ParticleEmitter")
+            or object:IsA("Trail")
+            or object:IsA("Beam")
+            or object:IsA("Smoke")
+            or object:IsA("Fire")
+            or object:IsA("Sparkles") then
+
+            FPSMasterSet(object, "Enabled", false)
+
+        -- 💡 Iluminação local
+        elseif object:IsA("PointLight")
+            or object:IsA("SpotLight")
+            or object:IsA("SurfaceLight") then
+
+            FPSMasterSet(object, "Enabled", false)
+
         end
     end
 
+    -- 🌑 Iluminação global
     pcall(function()
         FPSMasterSet(Lighting, "GlobalShadows", false)
     end)
+
+    -- ⚡ Qualidade gráfica mais baixa
+    pcall(function()
+        settings().Rendering.QualityLevel =
+            Enum.QualityLevel.Level01
+    end)
+
 end
 
 function MT7FPS.EnableFPSMaster(level)

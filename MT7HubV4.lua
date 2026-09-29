@@ -728,7 +728,7 @@ SettingsScroll.BorderSizePixel = 0
 
 SettingsScroll.ScrollBarThickness = 3
 SettingsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
-SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, 390)
+SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, 700)
 
 SettingsScroll.Parent = SettingsPage
 
@@ -890,6 +890,110 @@ FPSMasterButton.MouseButton1Click:Connect(function()
                 Color3.fromRGB(35, 35, 45)
 
         end)
+
+    end
+
+end)
+
+--==================================================
+-- 🛡️ ANTI-FREEZE PRO
+--==================================================
+
+local AntiFreezePROButton = Button(
+    SettingsScroll,
+    "🔴  ANTI-FREEZE PRO: OFF"
+)
+
+AntiFreezePROButton.Position =
+    UDim2.new(0, 20, 0, 470)
+
+AntiFreezePROButton.Size =
+    UDim2.new(1, -40, 0, 45)
+
+local AntiFreezePROEnabledUI = false
+
+AntiFreezePROButton.MouseButton1Click:Connect(function()
+
+    AntiFreezePROEnabledUI =
+        not AntiFreezePROEnabledUI
+
+    if AntiFreezePROEnabledUI then
+
+        -- ATIVAR ANTI-FREEZE PRO
+        pcall(function()
+            MT7FPS.EnableAntiFreezePRO()
+        end)
+
+        AntiFreezePROButton.Text =
+            "🟢  ANTI-FREEZE PRO: ON"
+
+        AntiFreezePROButton.BackgroundColor3 =
+            Color3.fromRGB(35, 120, 70)
+
+    else
+
+        -- DESATIVAR ANTI-FREEZE PRO
+        pcall(function()
+            MT7FPS.DisableAntiFreezePRO()
+        end)
+
+        AntiFreezePROButton.Text =
+            "🔴  ANTI-FREEZE PRO: OFF"
+
+        AntiFreezePROButton.BackgroundColor3 =
+            Color3.fromRGB(80, 35, 45)
+
+    end
+
+end)
+
+--==================================================
+-- ⚡ FPS BOOSTER PRO
+--==================================================
+
+local FPSBoosterPROButton = Button(
+    SettingsScroll,
+    "🔴  FPS BOOSTER PRO: OFF"
+)
+
+FPSBoosterPROButton.Position =
+    UDim2.new(0, 20, 0, 525)
+
+FPSBoosterPROButton.Size =
+    UDim2.new(1, -40, 0, 45)
+
+local FPSBoosterPROEnabledUI = false
+
+FPSBoosterPROButton.MouseButton1Click:Connect(function()
+
+    FPSBoosterPROEnabledUI =
+        not FPSBoosterPROEnabledUI
+
+    if FPSBoosterPROEnabledUI then
+
+        -- ATIVAR FPS BOOSTER PRO
+        pcall(function()
+            MT7FPS.EnableFPSBoosterPRO()
+        end)
+
+        FPSBoosterPROButton.Text =
+            "🟢  FPS BOOSTER PRO: ON"
+
+        FPSBoosterPROButton.BackgroundColor3 =
+            Color3.fromRGB(35, 120, 70)
+
+    else
+
+        -- DESATIVAR FPS BOOSTER PRO
+        pcall(function()
+            MT7FPS.DisableFPSBoosterPRO()
+        end)
+
+        FPSBoosterPROButton.Text =
+            "🔴  FPS BOOSTER PRO: OFF"
+
+        FPSBoosterPROButton.BackgroundColor3 =
+            Color3.fromRGB(80, 35, 45)
 
     end
 

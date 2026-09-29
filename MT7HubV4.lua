@@ -1293,31 +1293,33 @@ BoosterButton.MouseButton1Click:Connect(function()
     if not BoosterEnabled then
 
         local success, err = pcall(function()
-    if not MT7FPS then
-        error("MT7FPS não foi carregado")
-    end
 
-    if not MT7FPS.QuickBoost then
-        error("QuickBoost não existe")
-    end
-
-    MT7FPS.QuickBoost()
-end)
-
-if not success then
-    warn("[MT7 HUB] ERRO FPS BOOSTER: " .. tostring(err))
+            if not MT7FPS then
+                error("MT7FPS não foi carregado")
             end
 
+            if not MT7FPS.QuickBoost then
+                error("QuickBoost não existe")
+            end
+
+            MT7FPS.QuickBoost()
+
+        end)
+
         if success then
+
             BoosterEnabled = true
+            BoosterButton.Text = "🟢  FPS BOOSTER: ON"
+            BoosterButton.BackgroundColor3 = C.Green
 
-            BoosterButton.Text = "🟢  FPS BOOSTER  ON"
-            BoosterButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
         else
-            BoosterEnabled = false
 
-            BoosterButton.Text = "🔴  FPS BOOSTER  OFF"
-            BoosterButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
+            BoosterEnabled = false
+            BoosterButton.Text = "🔴  FPS BOOSTER: OFF"
+            BoosterButton.BackgroundColor3 = C.Background
+
+            warn("[MT7 HUB] FPS BOOSTER ERROR: " .. tostring(err))
+
         end
 
     else
@@ -1328,9 +1330,8 @@ if not success then
         end)
 
         BoosterEnabled = false
-
-        BoosterButton.Text = "🔴  FPS BOOSTER  OFF"
-        BoosterButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
+        BoosterButton.Text = "🔴  FPS BOOSTER: OFF"
+        BoosterButton.BackgroundColor3 = C.Background
 
     end
 

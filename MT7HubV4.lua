@@ -884,13 +884,12 @@ FreezeButton.MouseButton1Click:Connect(function()
         if FreezeEnabled then
             -- Anti-Freeze leve:
             -- NÃO ativa o sistema Adaptive pesado.
-            MT7FPS.Enable()
+            MT7FPS.EnableFreezeProtection()
 
             FreezeButton.Text = "🟢  ANTI-FREEZE ON"
             FreezeButton.BackgroundColor3 = Color3.fromRGB(35, 120, 70)
         else
-            MT7FPS.Disable()
-            MT7FPS.Restore()
+            MT7FPS.DisableFreezeProtection()
 
             FreezeButton.Text = "🔴  ANTI-FREEZE OFF"
             FreezeButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)

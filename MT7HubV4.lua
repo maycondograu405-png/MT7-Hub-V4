@@ -807,7 +807,6 @@ FPSButton.MouseButton1Click:Connect(function()
 
     pcall(function()
         if FPSEnabled then
-            )
                 
         MT7Monitor.Create(Main)
         MT7Monitor.SetFPSEnabled(true)
@@ -835,7 +834,6 @@ PingButton.MouseButton1Click:Connect(function()
 
     pcall(function()
         if PingEnabled then
-            )
 
         MT7Monitor.Create(Main)
         MT7Monitor.SetPingEnabled(true)

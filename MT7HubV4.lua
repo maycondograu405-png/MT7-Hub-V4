@@ -634,6 +634,7 @@ end)
 --==================================================
 
 local function ApplyTheme(themeName)
+
     pcall(function()
 
         local theme = MT7Themes.Get(themeName)
@@ -642,7 +643,6 @@ local function ApplyTheme(themeName)
             return
         end
 
-        -- 🎨 Atualiza as cores usadas pela interface
         C.Black = theme.Background
         C.Background = theme.Background
         C.Panel = theme.Panel
@@ -654,7 +654,6 @@ local function ApplyTheme(themeName)
         C.White = theme.Text
         C.SubText = theme.SubText
 
-        -- 🌈 Aplica o tema completo
         MT7Themes.Set(themeName)
         MT7Themes.ApplyToGui(Gui, themeName)
         MT7Themes.ApplyAccent(Gui, themeName)
@@ -663,6 +662,7 @@ local function ApplyTheme(themeName)
         CurrentTheme = themeName
 
     end)
+
 end
 
 EclipseThemeButton.MouseButton1Click:Connect(function()

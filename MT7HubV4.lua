@@ -347,6 +347,61 @@ ModeButton.Position = UDim2.new(1, -82, 0, 15)
 ModeButton.Size = UDim2.new(0, 68, 0, 30)
 
 --==================================================
+-- 🔐 SISTEMA DE TROCA FREE / KEY
+--==================================================
+
+ModeButton.MouseButton1Click:Connect(function()
+
+    -- 🔒 Ainda não desbloqueou a KEY
+    if CurrentMode == "FREE" and not Unlocked then
+
+        CurrentMode = "FREE"
+
+        ModeButton.Text = "FREE"
+
+        if ModeLabel then
+            ModeLabel.Text = "FREE MODE"
+        end
+
+        -- Abre a tela para colocar a KEY
+        if KeyScreen then
+            KeyScreen.Visible = true
+        end
+
+        if KeyStatus then
+            KeyStatus.Text = "🔐 DIGITE SUA KEY PARA LIBERAR O MODO KEY"
+        end
+
+        return
+    end
+
+    -- 🔓 KEY já desbloqueada → entrar no KEY
+    if CurrentMode == "FREE" and Unlocked then
+
+        CurrentMode = "KEY"
+
+        ModeButton.Text = "KEY"
+
+        if ModeLabel then
+            ModeLabel.Text = "KEY MODE"
+        end
+
+    else
+
+        -- 🔄 Voltar para FREE
+        CurrentMode = "FREE"
+
+        ModeButton.Text = "FREE"
+
+        if ModeLabel then
+            ModeLabel.Text = "FREE MODE"
+        end
+
+    end
+
+end)
+
+--==================================================
 -- SIDEBAR
 --==================================================
 

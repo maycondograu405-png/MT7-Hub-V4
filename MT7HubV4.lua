@@ -829,6 +829,71 @@ local AnimationsButton = Button(
 AnimationsButton.Position = UDim2.new(0, 20, 0, 315)
 AnimationsButton.Size = UDim2.new(1, -40, 0, 45)
 
+--==================================================
+-- 🧠 FPS MASTER
+--==================================================
+
+local FPSMasterButton = Button(
+    SettingsScroll,
+    "🧠  FPS MASTER: OFF"
+)
+
+FPSMasterButton.Position = UDim2.new(0, 20, 0, 370)
+FPSMasterButton.Size = UDim2.new(1, -40, 0, 45)
+
+local FPSMasterEnabled = false
+
+FPSMasterButton.MouseButton1Click:Connect(function()
+
+    FPSMasterEnabled = not FPSMasterEnabled
+
+    if FPSMasterEnabled then
+
+        pcall(function()
+
+            -- FREE = otimização básica
+            -- KEY = otimização avançada
+            if CurrentMode == "KEY" and Unlocked then
+
+                MT7FPS.EnableFPSMaster("KEY")
+
+                FPSMasterButton.Text =
+                    "🔑  FPS MASTER: KEY"
+
+                FPSMasterButton.BackgroundColor3 =
+                    Color3.fromRGB(70, 45, 110)
+
+            else
+
+                MT7FPS.EnableFPSMaster("FREE")
+
+                FPSMasterButton.Text =
+                    "🟢  FPS MASTER: ON"
+
+                FPSMasterButton.BackgroundColor3 =
+                    Color3.fromRGB(35, 120, 70)
+
+            end
+
+        end)
+
+    else
+
+        pcall(function()
+
+            MT7FPS.DisableFPSMaster()
+
+            FPSMasterButton.Text =
+                "🧠  FPS MASTER: OFF"
+
+            FPSMasterButton.BackgroundColor3 =
+                Color3.fromRGB(35, 35, 45)
+
+        end)
+
+    end
+
+end)
 
 --==================================================
 -- 🔘 ESTADOS

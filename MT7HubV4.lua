@@ -60,7 +60,7 @@ local function LoadModule(name)
     local ok, result = pcall(function()
 
         local source = game:HttpGet(
-            BASE_URL .. name .. ".lua?v=4.1.5"      
+            BASE_URL .. name .. ".lua?v=4.1.6"      
             )
 
         local fn = loadstring(source)

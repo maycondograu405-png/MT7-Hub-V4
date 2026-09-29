@@ -784,6 +784,51 @@ local FreezeButton = Button(
 FreezeButton.Position = UDim2.new(0, 20, 0, 260)
 FreezeButton.Size = UDim2.new(1, -40, 0, 45)
 
+--==================================================
+-- 🎞️ ANIMAÇÕES DO PERSONAGEM
+--==================================================
+
+local CharacterAnimationsEnabled = true
+local CharacterAnimationConnection = nil
+
+local function SetCharacterAnimations(enabled)
+    CharacterAnimationsEnabled = enabled
+
+    local Character = Player.Character
+    if not Character then
+        return
+    end
+
+    pcall(function()
+        local Animate = Character:FindFirstChild("Animate")
+
+        if Animate then
+            Animate.Disabled = not enabled
+        end
+
+        local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+        if Humanoid then
+            local Animator = Humanoid:FindFirstChildOfClass("Animator")
+
+            if Animator and not enabled then
+                for _, track in ipairs(Animator:GetPlayingAnimationTracks()) do
+                    pcall(function()
+                        track:Stop(0.1)
+                    end)
+                end
+            end
+        end
+    end)
+end
+
+local AnimationsButton = Button(
+    SettingsScroll,
+    "🎞️  ANIMAÇÕES: ON"
+)
+
+AnimationsButton.Position = UDim2.new(0, 20, 0, 315)
+AnimationsButton.Size = UDim2.new(1, -40, 0, 45)
+
 
 --==================================================
 -- 🔘 ESTADOS
@@ -897,6 +942,70 @@ FreezeButton.MouseButton1Click:Connect(function()
             FreezeButton.BackgroundColor3 = Color3.fromRGB(80, 35, 45)
         end
     end)
+end)
+
+--==================================================
+-- 🎞️ TOGGLE ANIMAÇÕES
+--==================================================
+
+AnimationsButton.MouseButton1Click:Connect(function()
+
+    CharacterAnimationsEnabled = not CharacterAnimationsEnabled
+
+    pcall(function()
+
+        SetCharacterAnimations(CharacterAnimationsEnabled)
+
+        if CharacterAnimationsEnabled then
+            AnimationsButton.Text = "🟢  ANIMAÇÕES: ON"
+            AnimationsButton.BackgroundColor3 =
+                Color3.fromRGB(35, 120, 70)
+        else
+            AnimationsButton.Text = "🔴  ANIMAÇÕES: OFF"
+            AnimationsButton.BackgroundColor3 =
+                Color3.fromRGB(80, 35, 45)
+        end
+
+    end)
+
+end)
+
+--==================================================
+-- 🎞️ MANTER ANIMAÇÕES DESATIVADAS APÓS RESPAWN
+--==================================================
+
+Player.CharacterAdded:Connect(function(character)
+
+    task.wait(0.5)
+
+    if not CharacterAnimationsEnabled then
+        pcall(function()
+
+            local Animate = character:FindFirstChild("Animate")
+
+            if Animate then
+                Animate.Disabled = true
+            end
+
+            local Humanoid =
+                character:FindFirstChildOfClass("Humanoid")
+
+            local Animator =
+                Humanoid and Humanoid:FindFirstChildOfClass("Animator")
+
+            if Animator then
+                for _, track in ipairs(
+                    Animator:GetPlayingAnimationTracks()
+                ) do
+                    pcall(function()
+                        track:Stop(0.1)
+                    end)
+                end
+            end
+
+        end)
+    end
+
 end)
 
 --==================================================
